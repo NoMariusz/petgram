@@ -717,7 +717,38 @@ Uzupełnieniem palety jest skala neutralnych szarości. Barwy te zostały przezn
 
 Całościowo schemat kolorów Petgram można uznać za stonowany i naturalny. Nie służy on przyciąganiu uwagi za wszelką cenę, lecz tworzeniu środowiska, w którym użytkownik może komfortowo oglądać i publikować treści związane ze zwierzętami.
 
-Poniżej znajduje się opisana powyżej paleta barw razem z kodami poszczególnych kolorów.
+Poniżej znajduje się opisana powyżej paleta barw razem z kodami poszczególnych kolorów:
+**Kolor tła (Background Color)**
+
+- **FAF9F6**
+
+**Kolor bazowy (Base Color)**
+
+- **7D5739**
+
+**Dodatkowe wyróżniające kolory sekcji (Additional Section Colors)**
+
+- **F0EDE8**
+- **F4F4F0**
+
+**Kolory tagów oraz akcentów (Tag and Accent Colors)**
+
+- **FF8887**
+- **FECAA5**
+- **FEAEA5**
+- **C8F17A**
+
+**Kolory tekstu (Text Colors)**
+
+- **303330**
+- **5D605C**
+- **78716C**
+
+**Skala szarości (Grayscale)**
+
+- **FFFFFF**
+- **F4F4F0**
+- **DCDCDC**
 
 ## 6.4.Projekty kluczowych grafik i ornamentów
 
