@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import FormField from './FormField';
 import FormTextarea from './FormTextarea';
+import FileInputField from './FileInputField';
 
 interface FormData {
 	username: string;
@@ -23,6 +24,7 @@ export default function RegisterForm() {
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState(false);
 	const [apiError, setApiError] = useState('');
+	const [confirmPassword, setConfirmPassword] = useState('');
 	const [formData, setFormData] = useState<FormData>({
 		username: '',
 		email: '',
@@ -35,14 +37,45 @@ export default function RegisterForm() {
 		website: '',
 	});
 
+	const passwordsMatch =
+		formData.password &&
+		confirmPassword &&
+		formData.password === confirmPassword;
+	const passwordMismatchError =
+		formData.password && confirmPassword && !passwordsMatch
+			? 'Passwords do not match'
+			: '';
+
 	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
 	) => {
-		const { name, value } = e.target;
-		setFormData((prev) => ({
-			...prev,
-			[name]: value,
-		}));
+		const target = e.target as HTMLInputElement;
+		const { name, value, type } = target;
+
+		if (type === 'file') {
+			const file = target.files?.[0];
+			if (file) {
+				const reader = new FileReader();
+				reader.onload = (event) => {
+					setFormData((prev) => ({
+						...prev,
+						profilePictureUrl: event.target?.result as string,
+					}));
+				};
+				reader.readAsDataURL(file);
+			}
+		} else {
+			setFormData((prev) => ({
+				...prev,
+				[name]: value,
+			}));
+		}
+	};
+
+	const handleConfirmPasswordChange = (
+		e: React.ChangeEvent<HTMLInputElement>,
+	) => {
+		setConfirmPassword(e.target.value);
 	};
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -117,6 +150,19 @@ export default function RegisterForm() {
 			/>
 
 			<FormField
+				label='Confirm Password'
+				name='confirmPassword'
+				type='password'
+				value={confirmPassword}
+				onChange={handleConfirmPasswordChange}
+				required
+				minLength={8}
+				maxLength={255}
+				placeholder='Confirm your password'
+				error={passwordMismatchError}
+			/>
+
+			<FormField
 				label='First Name'
 				name='firstName'
 				value={formData.firstName}
@@ -146,14 +192,11 @@ export default function RegisterForm() {
 				rows={3}
 			/>
 
-			<FormField
-				label='Profile Picture URL'
-				name='profilePictureUrl'
-				type='url'
-				value={formData.profilePictureUrl}
+			<FileInputField
+				label='Profile Picture'
+				name='profilePictureImage'
 				onChange={handleChange}
-				maxLength={255}
-				placeholder='https://example.com/image.jpg'
+				accept='image/*'
 			/>
 
 			<FormField
@@ -175,7 +218,7 @@ export default function RegisterForm() {
 				placeholder='https://yourwebsite.com'
 			/>
 
-			<button type='submit' disabled={loading}>
+			<button type='submit' disabled={loading || !passwordsMatch}>
 				{loading ? 'Creating account...' : 'Sign up'}
 			</button>
 		</form>

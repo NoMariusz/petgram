@@ -6,7 +6,8 @@ export default function RegisterEmailSend() {
 
 	return (
 		<p>
-			Please check your email at {email || 'your email address'} to activate your account.
+			Please check your email at {email || 'your email address'} to
+			activate your account.
 		</p>
 	);
 }
