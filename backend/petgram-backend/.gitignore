@@ -36,4 +36,8 @@ out/
 ### VS Code ###
 .vscode/
 
+# Environment variables
+.env
+!.env-template
+
 data/petgram.db
