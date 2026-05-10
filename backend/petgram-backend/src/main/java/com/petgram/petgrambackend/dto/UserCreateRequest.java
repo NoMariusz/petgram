@@ -6,37 +6,37 @@ import jakarta.validation.constraints.Size;
 
 public class UserCreateRequest {
 
-	@NotBlank
-	@Size(min = 3, max = 50)
+	@NotBlank(message = "Username is required")
+	@Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
 	private String username;
 
-	@NotBlank
-	@Email
-	@Size(max = 100)
+	@NotBlank(message = "Email is required")
+	@Email(message = "Email must be a valid email address")
+	@Size(max = 100, message = "Email must be at most 100 characters")
 	private String email;
 
-	@NotBlank
-	@Size(min = 8, max = 255)
+	@NotBlank(message = "Password is required")
+	@Size(min = 8, max = 255, message = "Password must be between 8 and 255 characters")
 	private String password;
 
-	@NotBlank
-	@Size(max = 50)
+	@NotBlank(message = "First name is required")
+	@Size(max = 50, message = "First name must be at most 50 characters")
 	private String firstName;
 
-	@NotBlank
-	@Size(max = 50)
+	@NotBlank(message = "Last name is required")
+	@Size(max = 50, message = "Last name must be at most 50 characters")
 	private String lastName;
 
-	@Size(max = 500)
+	@Size(max = 500, message = "Bio must be at most 500 characters")
 	private String bio;
 
-	@Size(max = 255)
+	@Size(max = 255, message = "Profile picture URL must be at most 255 characters")
 	private String profilePictureUrl;
 
-	@Size(max = 100)
+	@Size(max = 100, message = "Location must be at most 100 characters")
 	private String location;
 
-	@Size(max = 255)
+	@Size(max = 255, message = "Website must be at most 255 characters")
 	private String website;
 
 	public String getUsername() {

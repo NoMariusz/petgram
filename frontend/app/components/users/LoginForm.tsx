@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import loginTextUrl from '../../assets/loginText.svg';
 import googleLogoUrl from '../../assets/googleLogo.png';
 import truthSocialLogoUrl from '../../assets/truthSocialLogo.png';
@@ -13,7 +13,47 @@ interface LoginData {
 	password: string;
 }
 
+interface LoginResponse {
+	userId: number;
+	username: string;
+	email: string;
+	role: string | null;
+	active: boolean;
+	verified: boolean;
+	accessToken: string;
+	tokenType: string;
+	expiresInSeconds: number;
+}
+
+interface ApiError {
+	error?: string;
+}
+
+const AUTH_STORAGE_KEY = 'petgram.auth';
+
+function persistAuthSession(response: LoginResponse) {
+	const expiresAt = Date.now() + response.expiresInSeconds * 1000;
+	const authData = {
+		userId: response.userId,
+		username: response.username,
+		email: response.email,
+		role: response.role,
+		active: response.active,
+		verified: response.verified,
+		tokenType: response.tokenType,
+		accessToken: response.accessToken,
+		expiresInSeconds: response.expiresInSeconds,
+		expiresAt,
+	};
+
+	localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authData));
+	localStorage.setItem('petgram.accessToken', response.accessToken);
+}
+
 export default function LoginForm() {
+	const navigate = useNavigate();
+	const [loading, setLoading] = useState(false);
+	const [apiError, setApiError] = useState('');
 	const [formData, setFormData] = useState<LoginData>({
 		username: '',
 		password: '',
@@ -27,8 +67,52 @@ export default function LoginForm() {
 		}));
 	};
 
-	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		setLoading(true);
+		setApiError('');
+
+		const apiUrl = import.meta.env.VITE_API_BASE_URL;
+		if (!apiUrl) {
+			setApiError('API URL is not configured.');
+			setLoading(false);
+			return;
+		}
+
+		try {
+			const response = await fetch(`${apiUrl}/login`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					login: formData.username,
+					password: formData.password,
+				}),
+			});
+
+			if (!response.ok) {
+				let message = `Login failed (${response.status})`;
+				try {
+					const errorData: ApiError = await response.json();
+					if (errorData.error) {
+						message = errorData.error;
+					}
+				} catch {
+					// Non-JSON error response; keep fallback message.
+				}
+				setApiError(message);
+				return;
+			}
+
+			const result: LoginResponse = await response.json();
+			persistAuthSession(result);
+			navigate('/posts/feed');
+		} catch {
+			setApiError('Network error. Please try again.');
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	return (
@@ -36,6 +120,11 @@ export default function LoginForm() {
 			onSubmit={handleSubmit}
 			className='flex flex-col items-center gap-4'
 		>
+			{apiError && (
+				<p className='w-full text-center text-sm text-red-600'>
+					{apiError}
+				</p>
+			)}
 			<img
 				src={loginTextUrl}
 				alt='Login'
@@ -70,7 +159,12 @@ export default function LoginForm() {
 				</Link>
 			</div>
 
-			<FormMainButton type='submit'>Log in</FormMainButton>
+			<FormMainButton
+				type='submit'
+				disabled={loading || !formData.username || !formData.password}
+			>
+				{loading ? 'Logging in...' : 'Log in'}
+			</FormMainButton>
 
 			<OrDivider className='my-1' />
 
