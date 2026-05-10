@@ -8,7 +8,7 @@ export default [
 	route('users/login', 'routes/users/login.tsx'),
 	route('users/register', 'routes/users/register.tsx'),
 	route('users/profile', 'routes/users/userProfile.tsx'),
-	route('register-email-send', 'routes/register-email-send.tsx'),
+	route('register-email-send', 'routes/users/register-email-send.tsx'),
 	route('pets/profile', 'routes/pets/petProfiel.tsx'),
 	route('core/settings', 'routes/core/settings.tsx'),
 ] satisfies RouteConfig;
