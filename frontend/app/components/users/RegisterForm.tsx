@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import FormField from './FormField';
-import FormTextarea from './FormTextarea';
+import FormTextareaField from './FormTextareaField';
 import FileInputField from './FileInputField';
+import FormMainButton from '../shared/FormMainButton';
+import signInTextUrl from '../../assets/signInText.svg';
 
 interface FormData {
 	username: string;
@@ -57,7 +59,7 @@ export default function RegisterForm() {
 			if (file) {
 				const reader = new FileReader();
 				reader.onload = (event) => {
-					setFormData((prev) => ({
+					setFormData((prev: FormData) => ({
 						...prev,
 						profilePictureUrl: event.target?.result as string,
 					}));
@@ -65,7 +67,7 @@ export default function RegisterForm() {
 				reader.readAsDataURL(file);
 			}
 		} else {
-			setFormData((prev) => ({
+			setFormData((prev: FormData) => ({
 				...prev,
 				[name]: value,
 			}));
@@ -112,115 +114,140 @@ export default function RegisterForm() {
 	};
 
 	return (
-		<form onSubmit={handleSubmit}>
+		<form
+			onSubmit={handleSubmit}
+			className='flex flex-col items-center gap-4'
+		>
+			<img
+				src={signInTextUrl}
+				alt='Sign in'
+				className='w-[164px] h-auto p-2'
+			/>
 			{apiError && <div>{apiError}</div>}
 
-			<FormField
-				label='Username'
-				name='username'
-				value={formData.username}
-				onChange={handleChange}
-				required
-				minLength={3}
-				maxLength={50}
-				placeholder='Enter your username'
-			/>
+			<div className='w-full flex flex-col gap-[15px]'>
+				<FormField
+					label='Username'
+					name='username'
+					value={formData.username}
+					onChange={handleChange}
+					required
+					minLength={3}
+					maxLength={50}
+					placeholder='Enter your username'
+				/>
 
-			<FormField
-				label='Email'
-				name='email'
-				type='email'
-				value={formData.email}
-				onChange={handleChange}
-				required
-				maxLength={100}
-				placeholder='Enter your email'
-			/>
+				<FormField
+					label='Email'
+					name='email'
+					type='email'
+					value={formData.email}
+					onChange={handleChange}
+					required
+					maxLength={100}
+					placeholder='Enter your email'
+				/>
 
-			<FormField
-				label='Password'
-				name='password'
-				type='password'
-				value={formData.password}
-				onChange={handleChange}
-				required
-				minLength={8}
-				maxLength={255}
-				placeholder='Enter a strong password'
-			/>
+				<FormField
+					label='Password'
+					name='password'
+					type='password'
+					value={formData.password}
+					onChange={handleChange}
+					required
+					minLength={8}
+					maxLength={255}
+					placeholder='Enter a strong password'
+				/>
 
-			<FormField
-				label='Confirm Password'
-				name='confirmPassword'
-				type='password'
-				value={confirmPassword}
-				onChange={handleConfirmPasswordChange}
-				required
-				minLength={8}
-				maxLength={255}
-				placeholder='Confirm your password'
-				error={passwordMismatchError}
-			/>
+				<FormField
+					label='Confirm Password'
+					name='confirmPassword'
+					type='password'
+					value={confirmPassword}
+					onChange={handleConfirmPasswordChange}
+					required
+					minLength={8}
+					maxLength={255}
+					placeholder='Confirm your password'
+					error={passwordMismatchError}
+				/>
 
-			<FormField
-				label='First Name'
-				name='firstName'
-				value={formData.firstName}
-				onChange={handleChange}
-				required
-				maxLength={50}
-				placeholder='Your first name'
-			/>
+				<FormField
+					label='First Name'
+					name='firstName'
+					value={formData.firstName}
+					onChange={handleChange}
+					required
+					maxLength={50}
+					placeholder='Your first name'
+				/>
 
-			<FormField
-				label='Last Name'
-				name='lastName'
-				value={formData.lastName}
-				onChange={handleChange}
-				required
-				maxLength={50}
-				placeholder='Your last name'
-			/>
+				<FormField
+					label='Last Name'
+					name='lastName'
+					value={formData.lastName}
+					onChange={handleChange}
+					required
+					maxLength={50}
+					placeholder='Your last name'
+				/>
 
-			<FormTextarea
-				label='Bio'
-				name='bio'
-				value={formData.bio}
-				onChange={handleChange}
-				maxLength={500}
-				placeholder='Tell us about yourself (optional)'
-				rows={3}
-			/>
+				<FormTextareaField
+					label='Bio'
+					name='bio'
+					value={formData.bio}
+					onChange={handleChange}
+					maxLength={500}
+					placeholder='Tell us about yourself (optional)'
+					rows={3}
+				/>
 
-			<FileInputField
-				label='Profile Picture'
-				name='profilePictureImage'
-				onChange={handleChange}
-				accept='image/*'
-			/>
+				{/* <FileInputField
+					label='Profile Picture'
+					name='profilePictureImage'
+					onChange={handleChange}
+					accept='image/*'
+				/> */}
 
-			<FormField
-				label='Location'
-				name='location'
-				value={formData.location}
-				onChange={handleChange}
-				maxLength={100}
-				placeholder='Your location (optional)'
-			/>
+				<FormField
+					label='Location'
+					name='location'
+					value={formData.location}
+					onChange={handleChange}
+					maxLength={100}
+					placeholder='Your location (optional)'
+				/>
 
-			<FormField
-				label='Website'
-				name='website'
-				type='url'
-				value={formData.website}
-				onChange={handleChange}
-				maxLength={255}
-				placeholder='https://yourwebsite.com'
-			/>
+				<FormField
+					label='Website'
+					name='website'
+					type='url'
+					value={formData.website}
+					onChange={handleChange}
+					maxLength={255}
+					placeholder='https://yourwebsite.com'
+				/>
+			</div>
 
-			<button type='submit' disabled={loading || !passwordsMatch}>
-				{loading ? 'Creating account...' : 'Sign up'}
-			</button>
+			<p className='text-[15px] leading-[19px] text-center text-black'>
+				By tapping the Sign in button, you agree to create an account
+				and to Petgrams’s terms. Information on how we collect, use and
+				share your data is set out in our Privacy Policy. Information on
+				our use of cookies and similar technologies is available in our
+				Cookie Policy.
+			</p>
+
+			<FormMainButton type='submit' disabled={loading || !passwordsMatch}>
+				{loading ? 'Creating account...' : 'Sign in'}
+			</FormMainButton>
+
+			<p className='text-[15px] leading-[19px] text-center text-[#717171]'>
+				You already have an account?{' '}
+				<Link to='/users/login' className='underline'>
+					Log in
+				</Link>
+			</p>
 		</form>
 	);
 }

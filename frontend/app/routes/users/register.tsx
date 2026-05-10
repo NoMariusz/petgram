@@ -1,10 +1,10 @@
 import RegisterForm from '../../components/users/RegisterForm';
+import UnloggedSimpleContainer from '../../components/shared/UnloggedSimpleContainer';
 
 export default function Register() {
 	return (
-		<div>
-			<h1>Sign up</h1>
+		<UnloggedSimpleContainer>
 			<RegisterForm />
-		</div>
+		</UnloggedSimpleContainer>
 	);
 }
