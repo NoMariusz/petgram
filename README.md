@@ -27,14 +27,14 @@ Petgram skupia się na publikowaniu, przeglądaniu i porządkowaniu treści zwi�
 - tworzenie profili,
 - logowanie,
 - rejestracja,
-- profil użytkownika jako jedna strona,
-- własny profil z ustawieniami,
-- profil innego użytkownika z opcją obserwowania.
+- profil użytkownika z linkiem do ustawień
+- profil innego użytkownika z opcją obserwowania
+- w profilu odnośniki do jego pupili.
 
 ### 🐶 Pupile
 
-- profil pupila,
-- profil własnego pupila z ustawieniami,
+- profil pupila ma odnośnik do jego opiekuna,
+- profil własnego pupila z edycją,
 - profil innego pupila z opcją obserwowania.
 
 ### ⚙️ Core
