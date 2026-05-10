@@ -6,12 +6,14 @@ import com.petgram.petgrambackend.entity.UserEntity;
 import com.petgram.petgrambackend.repository.RoleRepository;
 import com.petgram.petgrambackend.repository.UsersRepository;
 import com.petgram.petgrambackend.view.UserCreateResponse;
+import com.petgram.petgrambackend.view.UserDataResponse;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
 public class UsersServiceImpl implements UsersService {
@@ -75,5 +77,28 @@ public class UsersServiceImpl implements UsersService {
 
 	private UserCreateResponse toResponse(UserEntity user) {
 		return new UserCreateResponse(user.getId(), user.getUsername(), user.getEmail());
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public UserDataResponse getCurrentUserData(String username) {
+		UserEntity user = usersRepository.findByUsername(username)
+				.orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "User not found"));
+
+		String roleName = user.getRole() == null ? null : user.getRole().getName();
+		boolean active = Boolean.TRUE.equals(user.getIsActive());
+		boolean verified = Boolean.TRUE.equals(user.getIsVerified());
+
+		return new UserDataResponse(
+				user.getId(),
+				user.getUsername(),
+				user.getEmail(),
+				user.getFirstName(),
+				user.getLastName(),
+				roleName,
+				active,
+				verified,
+				user.getCreatedAt()
+		);
 	}
 }
