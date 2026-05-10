@@ -1,4 +1,4 @@
-package com.petgram.petgrambackend.config;
+package com.petgram.petgrambackend.store.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
