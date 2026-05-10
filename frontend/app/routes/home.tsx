@@ -2,6 +2,7 @@ import { Link } from 'react-router';
 import logoUrl from '../assets/logo.svg';
 import homeImage from '../assets/home-image.png';
 import FormMainButton from '~/components/shared/FormMainButton';
+import OrDivider from '~/components/shared/OrDivider';
 
 export default function Home() {
 	const bg = '#FAF9F6';
@@ -49,27 +50,13 @@ export default function Home() {
 
 									<div className='flex flex-col gap-4'>
 										<FormMainButton>
-											<Link
-												to='/users/login'
-												// className='h-[48px] rounded-[20px] bg-gradient-to-br from-[#7D5739] to-[#FECAA5] text-[#FFF7F4] text-base font-medium tracking-[0.25px] flex items-center justify-center shadow-sm'
-											>
-												Login
-											</Link>
+											<Link to='/users/login'>Login</Link>
 										</FormMainButton>
 
-										<div className='flex items-center gap-4 text-[#8A8A8A] text-xl font-normal justify-center py-1'>
-											<span className='h-px flex-1 bg-[#8A8A8A]' />
-											<span className='leading-none'>
-												OR
-											</span>
-											<span className='h-px flex-1 bg-[#8A8A8A]' />
-										</div>
+										<OrDivider className='my-1' />
 
 										<FormMainButton>
-											<Link
-												to='/users/register'
-												// className='h-[48px] rounded-[20px] bg-gradient-to-br from-[#7D5739] to-[#FECAA5] text-[#FFF7F4] text-base font-medium tracking-[0.25px] flex items-center justify-center shadow-sm'
-											>
+											<Link to='/users/register'>
 												Sign in
 											</Link>
 										</FormMainButton>

@@ -1,3 +1,13 @@
+import UnloggedSimpleContainer from '~/components/shared/UnloggedSimpleContainer';
+import LoginForm from '~/components/users/LoginForm';
+
 export default function Login() {
-	return <p>Login</p>;
+	return (
+		<UnloggedSimpleContainer
+			headerClassName='w-[366px] h-[173px]'
+			contentClassName='max-w-[526px] px-8 pt-8 pb-4'
+		>
+			<LoginForm />
+		</UnloggedSimpleContainer>
+	);
 }
