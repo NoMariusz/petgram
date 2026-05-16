@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import FormField from './FormField';
+import FormField from '../shared/formFields/FormField';
 import FormMainButton from '~/components/shared/FormMainButton';
 
-export default function ForgotPassword() {
+export default function ForgotPasswordForm() {
 	const [login, setLogin] = useState('');
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {

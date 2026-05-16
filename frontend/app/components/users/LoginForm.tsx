@@ -7,7 +7,7 @@ import { apiRequest } from '../../data/api';
 import FormMainButton from '../shared/FormMainButton';
 import FormSecondaryButton from '../shared/FormSecondaryButton';
 import OrDivider from '../shared/OrDivider';
-import FormField from './FormField';
+import FormField from '../shared/formFields/FormField';
 import { LOCAL_STORAGE_ACCESS_TOKEN_KEY } from '~/data/constants';
 
 interface LoginData {

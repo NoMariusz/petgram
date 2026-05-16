@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { apiRequest } from '../../data/api';
-import FormField from './FormField';
-import FormTextareaField from './FormTextareaField';
-import FileInputField from './FileInputField';
+import FormField from '../shared/formFields/FormField';
+import FormTextareaField from '../shared/formFields/FormTextareaField';
+import FileInputField from '../shared/formFields/FileInputField';
 import FormMainButton from '../shared/FormMainButton';
 import signInTextUrl from '../../assets/signInText.svg';
 import type { ApiError } from '~/data/types';

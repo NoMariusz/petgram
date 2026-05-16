@@ -11,6 +11,7 @@ import { apiRequest } from '~/data/api';
 import type { UserProfileResponse } from '~/data/types';
 import SecureImage from '~/components/shared/SecureImage';
 import { DEFAULT_USER_ROLE } from '~/data/constants';
+import SimpleAccentButton from '~/components/shared/SimpleAccentButton';
 
 export default function UserProfile() {
 	const params = useParams();
@@ -171,13 +172,11 @@ export default function UserProfile() {
 									</div>
 									<div className='flex items-center gap-3'>
 										{isOwnProfile ? (
-											<Link
-												to='/users/profile/edit'
-												type='button'
-												className='rounded-full bg-gradient-to-br from-[#7D5739] to-[#FECAA5] px-6 py-3 text-sm font-bold text-[#FFF7F4] shadow-[0_12px_32px_rgba(48,51,48,0.06)]'
-											>
-												Edit profile
-											</Link>
+											<SimpleAccentButton type='button'>
+												<Link to='/users/profile/edit'>
+													Edit profile
+												</Link>
+											</SimpleAccentButton>
 										) : (
 											<>
 												<button
@@ -192,16 +191,15 @@ export default function UserProfile() {
 														className='h-5 w-5'
 													/>
 												</button>
-												<button
+												<SimpleAccentButton
 													id='followButton'
 													type='button'
 													onClick={handleFollowToggle}
-													className='rounded-full bg-gradient-to-br from-[#7D5739] to-[#FECAA5] px-6 py-3 text-sm font-bold text-[#FFF7F4]'
 												>
 													{userProfile.isFollowed
 														? 'Following'
 														: 'Follow'}
-												</button>
+												</SimpleAccentButton>
 											</>
 										)}
 									</div>
@@ -354,12 +352,11 @@ export default function UserProfile() {
 												There is no pets, sooo Let's add
 												some pets to your profile!
 											</p>
-											<Link
-												to='/pets/add'
-												className='rounded-full bg-gradient-to-br from-[#7D5739] to-[#FECAA5] px-6 py-3 text-sm font-bold text-[#FFF7F4] shadow-[0_12px_32px_rgba(48,51,48,0.06)]'
-											>
-												Add a pet
-											</Link>
+											<SimpleAccentButton>
+												<Link to='/pets/add'>
+													Add a pet
+												</Link>
+											</SimpleAccentButton>
 										</div>
 									) : (
 										<p>No pets yet.</p>
