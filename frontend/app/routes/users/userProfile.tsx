@@ -63,8 +63,22 @@ export default function UserProfile() {
 		console.log('Share profile clicked');
 	};
 
-	const handleFollowToggle = () => {
-		console.log('Follow/unfollow clicked');
+	const handleFollowToggle = async () => {
+		const url = userProfile?.isFollowed
+			? `/users/${userProfile.id}/unfollow`
+			: `/users/${userProfile?.id}/follow`;
+		const res = await apiRequest(url, 'POST');
+		if (res.ok && userProfile) {
+			setUserProfile({
+				...userProfile,
+				isFollowed: !userProfile.isFollowed,
+				followersCount: userProfile.isFollowed
+					? userProfile.followersCount - 1
+					: userProfile.followersCount + 1,
+			});
+		} else {
+			console.error('Failed to toggle follow status');
+		}
 	};
 
 	const handleSharePinnedPost = () => {
@@ -80,7 +94,7 @@ export default function UserProfile() {
 	};
 
 	const roleLabel = userProfile?.role ?? DEFAULT_USER_ROLE;
-	const showUpgrade = roleLabel === DEFAULT_USER_ROLE;
+	const showUpgrade = isOwnProfile && roleLabel === DEFAULT_USER_ROLE;
 
 	const handleUpgradeRole = () => {
 		console.log('Upgrade role clicked');
@@ -88,9 +102,10 @@ export default function UserProfile() {
 
 	return (
 		<LoggedContainer activeItem='profile'>
-			{error ? (
-				<p className='text-red-600'>{error}</p>
-			) : isLoading || userProfile == null ? (
+			{error && (
+				<p className='text-red-600 text-center text-xl'>{error}</p>
+			)}
+			{isLoading || userProfile == null ? (
 				<div className='flex justify-center py-24'>
 					<Loader size={72} />
 				</div>

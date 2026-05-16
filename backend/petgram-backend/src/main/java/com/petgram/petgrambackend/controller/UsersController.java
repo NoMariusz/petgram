@@ -5,6 +5,7 @@ import com.petgram.petgrambackend.service.UsersService;
 import com.petgram.petgrambackend.view.UserCreateResponse;
 import com.petgram.petgrambackend.view.UserDataResponse;
 import com.petgram.petgrambackend.view.UserProfileResponse;
+import com.petgram.petgrambackend.view.FollowResponse;
 import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
@@ -45,5 +46,15 @@ public class UsersController {
 	@GetMapping("/{id}/profile")
 	public UserProfileResponse getUserProfileById(@PathVariable Long id, Authentication authentication) {
 		return usersService.getUserProfileById(id, authentication);
+	}
+
+	@PostMapping("/{id}/follow")
+	public FollowResponse follow(@PathVariable Long id, Authentication authentication) {
+		return usersService.follow(id, authentication);
+	}
+
+	@PostMapping("/{id}/unfollow")
+	public FollowResponse unfollow(@PathVariable Long id, Authentication authentication) {
+		return usersService.unfollow(id, authentication);
 	}
 }

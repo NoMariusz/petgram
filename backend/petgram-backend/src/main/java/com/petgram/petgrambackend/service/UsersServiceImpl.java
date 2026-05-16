@@ -10,6 +10,7 @@ import com.petgram.petgrambackend.repository.UsersRepository;
 import com.petgram.petgrambackend.view.UserCreateResponse;
 import com.petgram.petgrambackend.view.UserDataResponse;
 import com.petgram.petgrambackend.view.UserProfileResponse;
+import com.petgram.petgrambackend.view.FollowResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -192,5 +193,61 @@ public class UsersServiceImpl implements UsersService {
 				followingCount,
 				isOwnProfile
 		);
+	}
+
+	@Override
+	@Transactional
+	public FollowResponse follow(Long followUserId, Authentication authentication) {
+		String currentUsername = authentication.getName();
+		UserEntity currentUser = usersRepository.findByUsername(currentUsername)
+				.orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Current user not found"));
+		Long currentUserId = currentUser.getId();
+
+		if (currentUserId.equals(followUserId)) {
+			throw new ResponseStatusException(org.springframework.http.HttpStatus.CONFLICT, "Cannot follow yourself");
+		}
+
+		UserEntity userToFollow = usersRepository.findById(followUserId)
+				.orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "User not found"));
+
+		boolean alreadyFollowing = currentUser.getFollowing().stream()
+				.anyMatch(user -> user.getId().equals(followUserId));
+
+		if (alreadyFollowing) {
+			throw new ResponseStatusException(org.springframework.http.HttpStatus.CONFLICT, "Already following this user");
+		}
+
+		currentUser.getFollowing().add(userToFollow);
+		usersRepository.save(currentUser);
+
+		return new FollowResponse(true, "Successfully followed user");
+	}
+
+	@Override
+	@Transactional
+	public FollowResponse unfollow(Long unfollowUserId, Authentication authentication) {
+		String currentUsername = authentication.getName();
+		UserEntity currentUser = usersRepository.findByUsername(currentUsername)
+				.orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Current user not found"));
+		Long currentUserId = currentUser.getId();
+
+		if (currentUserId.equals(unfollowUserId)) {
+			throw new ResponseStatusException(org.springframework.http.HttpStatus.CONFLICT, "Cannot unfollow yourself");
+		}
+
+		UserEntity userToUnfollow = usersRepository.findById(unfollowUserId)
+				.orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "User not found"));
+
+		boolean isFollowing = currentUser.getFollowing().stream()
+				.anyMatch(user -> user.getId().equals(unfollowUserId));
+
+		if (!isFollowing) {
+			throw new ResponseStatusException(org.springframework.http.HttpStatus.CONFLICT, "Not following this user");
+		}
+
+		currentUser.getFollowing().remove(userToUnfollow);
+		usersRepository.save(currentUser);
+
+		return new FollowResponse(true, "Successfully unfollowed user");
 	}
 }
