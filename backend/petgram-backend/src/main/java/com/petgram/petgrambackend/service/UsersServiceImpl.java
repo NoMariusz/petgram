@@ -1,6 +1,7 @@
 package com.petgram.petgrambackend.service;
 
 import com.petgram.petgrambackend.dto.UserCreateRequest;
+import com.petgram.petgrambackend.dto.UserUpdateRequest;
 import com.petgram.petgrambackend.entity.PostEntity;
 import com.petgram.petgrambackend.entity.RoleEntity;
 import com.petgram.petgrambackend.entity.UserEntity;
@@ -11,6 +12,7 @@ import com.petgram.petgrambackend.view.UserCreateResponse;
 import com.petgram.petgrambackend.view.UserDataResponse;
 import com.petgram.petgrambackend.view.UserProfileResponse;
 import com.petgram.petgrambackend.view.FollowResponse;
+import com.petgram.petgrambackend.view.UserUpdateResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -115,6 +117,9 @@ public class UsersServiceImpl implements UsersService {
 				user.getEmail(),
 				user.getFirstName(),
 				user.getLastName(),
+				user.getBio(),
+				user.getLocation(),
+				user.getWebsite(),
 				roleName,
 				active,
 				verified,
@@ -249,5 +254,48 @@ public class UsersServiceImpl implements UsersService {
 		usersRepository.save(currentUser);
 
 		return new FollowResponse(true, "Successfully unfollowed user");
+	}
+
+	@Override
+	@Transactional
+	public UserUpdateResponse updateCurrentUser(UserUpdateRequest request, Authentication authentication) {
+		String currentUsername = authentication.getName();
+		UserEntity currentUser = usersRepository.findByUsername(currentUsername)
+				.orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "User not found"));
+
+		// Update only non-null fields
+		if (request.getFirstName() != null) {
+			currentUser.setFirstName(request.getFirstName());
+		}
+
+		if (request.getLastName() != null) {
+			currentUser.setLastName(request.getLastName());
+		}
+
+		if (request.getBio() != null) {
+			currentUser.setBio(request.getBio());
+		}
+
+		if (request.getLocation() != null) {
+			currentUser.setLocation(request.getLocation());
+		}
+
+		if (request.getWebsite() != null) {
+			currentUser.setWebsite(request.getWebsite());
+		}
+
+		if (request.getProfilePictureImage() != null && !request.getProfilePictureImage().isEmpty()) {
+			String imageUrl = fileStorageService.saveBase64(request.getProfilePictureImage());
+			currentUser.setProfilePictureUrl(imageUrl);
+		}
+
+		UserEntity updatedUser = usersRepository.save(currentUser);
+
+		return new UserUpdateResponse(
+				true,
+				"User updated successfully",
+				updatedUser.getId(),
+				updatedUser.getUsername()
+		);
 	}
 }

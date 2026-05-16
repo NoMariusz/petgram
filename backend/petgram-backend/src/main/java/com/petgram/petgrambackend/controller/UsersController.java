@@ -1,16 +1,19 @@
 package com.petgram.petgrambackend.controller;
 
 import com.petgram.petgrambackend.dto.UserCreateRequest;
+import com.petgram.petgrambackend.dto.UserUpdateRequest;
 import com.petgram.petgrambackend.service.UsersService;
 import com.petgram.petgrambackend.view.UserCreateResponse;
 import com.petgram.petgrambackend.view.UserDataResponse;
 import com.petgram.petgrambackend.view.UserProfileResponse;
 import com.petgram.petgrambackend.view.FollowResponse;
+import com.petgram.petgrambackend.view.UserUpdateResponse;
 import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -56,5 +59,10 @@ public class UsersController {
 	@PostMapping("/{id}/unfollow")
 	public FollowResponse unfollow(@PathVariable Long id, Authentication authentication) {
 		return usersService.unfollow(id, authentication);
+	}
+
+	@PatchMapping("/me")
+	public UserUpdateResponse updateCurrentUser(@Valid @RequestBody UserUpdateRequest request, Authentication authentication) {
+		return usersService.updateCurrentUser(request, authentication);
 	}
 }

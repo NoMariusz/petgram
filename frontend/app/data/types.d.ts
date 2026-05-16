@@ -1,3 +1,7 @@
+interface ApiError {
+	error: string;
+}
+
 export interface UserProfilePetResponse {
 	id: number;
 	name: string;
@@ -10,6 +14,20 @@ export interface UserPinnedPostResponse {
 	postPictureUrl: string;
 	creatorName: string;
 	likesCount: number;
+}
+
+export interface UserDataResponse {
+	id: number;
+	username: string;
+	firstName: string;
+	lastName: string;
+	bio: string;
+	profilePictureUrl: string;
+	location: string;
+	website: string;
+	role: string;
+	active: boolean;
+	verified: boolean;
 }
 
 export interface UserProfileResponse {

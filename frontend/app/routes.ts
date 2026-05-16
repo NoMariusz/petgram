@@ -12,6 +12,7 @@ export default [
 	route('register-email-send', 'routes/users/register-email-send.tsx'),
 	// Support optional id parameter for viewing other users' profiles
 	route('users/profile', 'routes/users/userProfile.tsx'),
+	route('users/profile/edit', 'routes/users/editProfile.tsx'),
 	route('users/profile/:id', 'routes/users/userProfileParam.tsx'),
 	route('pets/add', 'routes/pets/addPet.tsx'),
 	route('pets/profile/:id', 'routes/pets/petProfile.tsx'),

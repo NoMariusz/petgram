@@ -171,13 +171,13 @@ export default function UserProfile() {
 									</div>
 									<div className='flex items-center gap-3'>
 										{isOwnProfile ? (
-											<button
+											<Link
+												to='/users/profile/edit'
 												type='button'
-												onClick={handleEditProfile}
 												className='rounded-full bg-gradient-to-br from-[#7D5739] to-[#FECAA5] px-6 py-3 text-sm font-bold text-[#FFF7F4] shadow-[0_12px_32px_rgba(48,51,48,0.06)]'
 											>
 												Edit profile
-											</button>
+											</Link>
 										) : (
 											<>
 												<button
