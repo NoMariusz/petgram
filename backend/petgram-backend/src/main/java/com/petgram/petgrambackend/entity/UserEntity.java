@@ -2,6 +2,8 @@ package com.petgram.petgrambackend.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {
@@ -50,6 +52,12 @@ public class UserEntity {
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "role_id", nullable = false)
     private RoleEntity role;
+
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
+    private List<PetEntity> pets = new ArrayList<>();
+
+    @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY)
+    private List<PostEntity> createdPosts = new ArrayList<>();
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -141,6 +149,14 @@ public class UserEntity {
         return role;
     }
 
+    public List<PetEntity> getPets() {
+        return pets;
+    }
+
+    public List<PostEntity> getCreatedPosts() {
+        return createdPosts;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -196,5 +212,13 @@ public class UserEntity {
 
     public void setRole(RoleEntity role) {
         this.role = role;
+    }
+
+    public void setPets(List<PetEntity> pets) {
+        this.pets = pets;
+    }
+
+    public void setCreatedPosts(List<PostEntity> createdPosts) {
+        this.createdPosts = createdPosts;
     }
 }
