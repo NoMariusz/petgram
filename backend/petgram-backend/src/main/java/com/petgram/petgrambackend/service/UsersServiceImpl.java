@@ -26,7 +26,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @Service
 public class UsersServiceImpl implements UsersService {
 
-	private static final String DEFAULT_ROLE_NAME = "USER";
+	private static final String DEFAULT_ROLE_NAME = "Pet owner";
 
 	private final UsersRepository usersRepository;
 	private final PostRepository postRepository;
@@ -172,7 +172,7 @@ public class UsersServiceImpl implements UsersService {
 		// Calculate counts
 		long postsCount = usersRepository.countCreatedPostsById(userId);
 		long followersCount = usersRepository.countFollowersById(userId);
-		long followingCount = usersRepository.countFollowingById(userId);
+		long followingCount = usersRepository.countFollowedUsersById(userId) + usersRepository.countFollowedPetsById(userId);
 		boolean isOwnProfile = userId.equals(currentUserId);
 
 		return new UserProfileResponse(

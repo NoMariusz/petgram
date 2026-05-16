@@ -12,5 +12,7 @@ public class WebConfig implements WebMvcConfigurer {
         // Added a leading slash to the handler pattern
         registry.addResourceHandler("/data/uploads/**")
                 .addResourceLocations("file:./data/uploads/");
+        registry.addResourceHandler("/data/seed/**")
+                .addResourceLocations("file:./data/seed/");
     }
 }
