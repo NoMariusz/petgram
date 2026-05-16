@@ -27,4 +27,5 @@ export interface UserProfileResponse {
 	postsCount: number;
 	followersCount: number;
 	followingCount: number;
+	isOwnProfile: boolean;
 }

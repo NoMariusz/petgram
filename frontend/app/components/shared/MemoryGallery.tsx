@@ -60,15 +60,15 @@ export interface MemoryGalleryItem {
 interface MemoryGalleryProps {
 	relatedObjectType: 'user' | 'pet';
 	id: number;
-	items?: MemoryGalleryItem[];
 }
 
 export default function MemoryGallery({
 	relatedObjectType,
 	id,
-	items = [],
 }: MemoryGalleryProps) {
 	const [view, setView] = useState<'grid' | 'list'>('list');
+
+	const [items, setItems] = useState<MemoryGalleryItem[]>([]);
 
 	return (
 		<section className='mt-10'>

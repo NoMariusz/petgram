@@ -9,10 +9,11 @@ export default [
 	route('users/login', 'routes/users/login.tsx'),
 	route('forgot-password', 'routes/users/forgot-password.tsx'),
 	route('users/register', 'routes/users/register.tsx'),
+	route('register-email-send', 'routes/users/register-email-send.tsx'),
 	// Support optional id parameter for viewing other users' profiles
 	route('users/profile', 'routes/users/userProfile.tsx'),
 	route('users/profile/:id', 'routes/users/userProfileParam.tsx'),
-	route('register-email-send', 'routes/users/register-email-send.tsx'),
+	route('pets/add', 'routes/pets/addPet.tsx'),
 	route('pets/profile/:id', 'routes/pets/petProfile.tsx'),
 	route('core/settings', 'routes/core/settings.tsx'),
 ] satisfies RouteConfig;

@@ -16,7 +16,8 @@ public record UserProfileResponse(
 		Boolean isFollowed,
 		Long postsCount,
 		Long followersCount,
-		Long followingCount
+		Long followingCount,
+		Boolean isOwnProfile
 ) {
 	public record UserProfilePetResponse(
 			Long id,

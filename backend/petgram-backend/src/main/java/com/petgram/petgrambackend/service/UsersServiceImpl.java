@@ -164,6 +164,7 @@ public class UsersServiceImpl implements UsersService {
 		long postsCount = usersRepository.countCreatedPostsById(userId);
 		long followersCount = usersRepository.countFollowersById(userId);
 		long followingCount = usersRepository.countFollowingById(userId);
+		boolean isOwnProfile = userId.equals(currentUserId);
 
 		return new UserProfileResponse(
 				user.getId(),
@@ -179,7 +180,8 @@ public class UsersServiceImpl implements UsersService {
 				isFollowed,
 				postsCount,
 				followersCount,
-				followingCount
+				followingCount,
+				isOwnProfile
 		);
 	}
 }
