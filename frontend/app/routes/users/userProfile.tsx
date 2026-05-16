@@ -10,6 +10,7 @@ import pinIconUrl from '~/assets/pin_icon.svg';
 import { apiRequest } from '~/data/api';
 import type { UserProfileResponse } from '~/data/types';
 import SecureImage from '~/components/shared/SecureImage';
+import { DEFAULT_USER_ROLE } from '~/data/constants';
 
 export default function UserProfile() {
 	const params = useParams();
@@ -78,6 +79,13 @@ export default function UserProfile() {
 		return value.toString();
 	};
 
+	const roleLabel = userProfile?.role ?? DEFAULT_USER_ROLE;
+	const showUpgrade = roleLabel === DEFAULT_USER_ROLE;
+
+	const handleUpgradeRole = () => {
+		console.log('Upgrade role clicked');
+	};
+
 	return (
 		<LoggedContainer activeItem='profile'>
 			{error ? (
@@ -117,7 +125,23 @@ export default function UserProfile() {
 								</span>
 							</div>
 							<span className='absolute -bottom-0 m-5 left-0 rounded-full bg-[#7D5739] px-4 py-2 text-xs font-semibold text-[#FFF7F4]'>
-								{userProfile.role ?? 'Pet owner'}
+								{roleLabel}
+								{showUpgrade && (
+									<button
+										type='button'
+										onClick={handleUpgradeRole}
+										className='absolute -top-1 -right-1 h-4 w-4 rounded-full bg-[#FECAA5] text-[#7D5739] flex items-center justify-center shadow-[0_4px_10px_rgba(48,51,48,0.15)] group'
+										aria-label='Upgrade role'
+									>
+										<span className='text-xs font-bold'>
+											↑
+										</span>
+										<span className='pointer-events-none absolute -top-10 right-0 whitespace-nowrap rounded-full bg-[#303330] px-3 py-1 text-[11px] text-[#FFF7F4] opacity-0 transition-opacity group-hover:opacity-100'>
+											Upgrade your profile to Specialist
+											role!
+										</span>
+									</button>
+								)}
 							</span>
 
 							<div className='flex-1 space-y-2'>
@@ -309,7 +333,22 @@ export default function UserProfile() {
 						<div className='flex flex-wrap gap-6'>
 							{userProfile.pets.length === 0 ? (
 								<div className='rounded-[16px] bg-[#FFFEFB] p-6 text-sm text-[#5D605C] shadow-[0_12px_32px_rgba(48,51,48,0.06)]'>
-									No pets yet.
+									{isOwnProfile ? (
+										<div>
+											<p className='mb-5'>
+												There is no pets, sooo Let's add
+												some pets to your profile!
+											</p>
+											<Link
+												to='/pets/add'
+												className='rounded-full bg-gradient-to-br from-[#7D5739] to-[#FECAA5] px-6 py-3 text-sm font-bold text-[#FFF7F4] shadow-[0_12px_32px_rgba(48,51,48,0.06)]'
+											>
+												Add a pet
+											</Link>
+										</div>
+									) : (
+										<p>No pets yet.</p>
+									)}
 								</div>
 							) : (
 								userProfile.pets.map((pet) => (
