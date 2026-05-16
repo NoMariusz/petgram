@@ -17,7 +17,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -39,11 +38,11 @@ public class UsersServiceImpl implements UsersService {
 	private final FileStorageService fileStorageService;
 
 	public UsersServiceImpl(
-            UsersRepository usersRepository,
-            PostRepository postRepository,
-            RoleRepository roleRepository,
-            PasswordEncoder passwordEncoder,
-            UserActivationEmailService userActivationEmailService, FileStorageService fileStorageService
+			UsersRepository usersRepository,
+			PostRepository postRepository,
+			RoleRepository roleRepository,
+			PasswordEncoder passwordEncoder,
+			UserActivationEmailServiceImpl userActivationEmailService, FileStorageServiceImpl fileStorageService
     ) {
 		this.usersRepository = usersRepository;
 		this.postRepository = postRepository;
