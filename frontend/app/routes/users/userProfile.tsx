@@ -4,10 +4,11 @@ import LoggedContainer from '~/components/shared/LoggedContainer';
 import Loader from '~/components/shared/Loader';
 import MemoryGallery from '~/components/shared/MemoryGallery';
 import shareIconUrl from '~/assets/share_icon.svg';
+import sharePostIconUrl from '~/assets/share_post_icon.svg';
 import mapPinIconUrl from '~/assets/map_pin_icon.svg';
+import pinIconUrl from '~/assets/pin_icon.svg';
 import { apiRequest } from '~/data/api';
 import type { UserProfileResponse } from '~/data/types';
-import { FILE_SERVER_URL } from '~/data/constants';
 import SecureImage from '~/components/shared/SecureImage';
 
 export default function UserProfile() {
@@ -93,10 +94,7 @@ export default function UserProfile() {
 								<div className='h-[128px] w-[128px] rounded-full bg-[#E7E9E4] shadow-[0_0_0_4px_#FFFFFF,0_1px_2px_rgba(0,0,0,0.05)] overflow-hidden'>
 									{userProfile.profilePictureUrl ? (
 										<SecureImage
-											src={
-												FILE_SERVER_URL +
-												userProfile.profilePictureUrl
-											}
+											src={userProfile.profilePictureUrl}
 											alt={displayName}
 											className='h-full w-full object-cover'
 										/>
@@ -224,7 +222,7 @@ export default function UserProfile() {
 								Pinned post
 							</h2>
 
-							<div className='relative rounded-[16px] bg-gradient-to-br from-[#7D5739] to-[#FECAA5] p-[1px]'>
+							<div className='relative rounded-[16px] bg-gradient-to-br from-[#7D5739] to-[#FECAA5] p-[4px]'>
 								<div className='flex flex-col overflow-hidden rounded-[16px] bg-[#FFFEFB] shadow-[0_12px_32px_rgba(48,51,48,0.06)] md:flex-row'>
 									<Link
 										to={`/posts/${userProfile.pinnedPost.id}`}
@@ -232,7 +230,7 @@ export default function UserProfile() {
 									>
 										{userProfile.pinnedPost
 											.postPictureUrl && (
-											<img
+											<SecureImage
 												src={
 													userProfile.pinnedPost
 														.postPictureUrl
@@ -253,20 +251,22 @@ export default function UserProfile() {
 												}
 											</h3>
 											<div className='flex items-center gap-2 text-[14px] font-semibold text-[#7D5739]'>
-												<svg
-													viewBox='0 0 24 24'
+												<img
+													src={pinIconUrl}
+													alt='Pinned'
 													className='h-4 w-4'
-												>
-													<path
-														d='M14 3h7v7l-2-2-5 5-4-4-7 7-2-2 9-9-2-2z'
-														fill='currentColor'
-													/>
-												</svg>
+												/>
 												<span>Pinned</span>
 											</div>
 										</div>
-										<p className='text-[16px] font-bold text-[#303330]'>
-											{userProfile.pinnedPost.text}
+										<p className='text-[16px] text-[#303330]'>
+											<b>
+												{
+													userProfile.pinnedPost
+														.creatorName
+												}
+											</b>
+											: {userProfile.pinnedPost.text}
 										</p>
 										<div className='flex items-center gap-6 text-sm font-semibold text-[#303330]'>
 											<span className='flex items-center gap-2'>
@@ -289,16 +289,11 @@ export default function UserProfile() {
 												onClick={handleSharePinnedPost}
 												className='flex items-center gap-2 text-[#5D605C]'
 											>
-												<svg
-													viewBox='0 0 24 24'
-													className='h-4 w-4'
-												>
-													<path
-														d='M15 8a3 3 0 1 0-2.8-4H12a3 3 0 0 0 0 6 2.9 2.9 0 0 0 1.8-.6l4 2a3 3 0 1 0 0 3.2l-4 2a3 3 0 1 0 .4 1.4l4-2a3 3 0 1 0 .8-2.2l-4-2z'
-														fill='currentColor'
-													/>
-												</svg>
-												Share
+												<img
+													src={sharePostIconUrl}
+													alt='Share post'
+													className='h-5 w-5'
+												/>
 											</button>
 										</div>
 									</div>
@@ -325,7 +320,7 @@ export default function UserProfile() {
 									>
 										<div className='h-[120px] w-full overflow-hidden rounded-[16px] bg-[#E7E9E4]'>
 											{pet.profilePictureUrl && (
-												<img
+												<SecureImage
 													src={pet.profilePictureUrl}
 													alt={pet.name}
 													className='h-full w-full object-cover'

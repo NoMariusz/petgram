@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { LOCAL_STORAGE_ACCESS_TOKEN_KEY } from '~/data/constants';
+import {
+	FILE_SERVER_URL,
+	LOCAL_STORAGE_ACCESS_TOKEN_KEY,
+} from '~/data/constants';
 
 const SecureImage: React.FC<{
 	src: string;
@@ -19,7 +22,7 @@ const SecureImage: React.FC<{
 					LOCAL_STORAGE_ACCESS_TOKEN_KEY,
 				);
 
-				const response = await fetch(src, {
+				const response = await fetch(FILE_SERVER_URL + src, {
 					headers: {
 						Authorization: `Bearer ${token}`,
 					},

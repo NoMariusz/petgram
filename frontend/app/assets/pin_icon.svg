@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="22 17 62 62" width="100" height="100">
+  <g transform="translate(50, 50) rotate(45) translate(-50, -50)" fill="#7D5739">
+    <path
+      d="M 36,22 
+             C 36,17 64,17 64,22 
+             C 64,27 57,29 57,36 
+             C 57,46 72,49 72,57 
+             L 72,59 
+             L 53,59 
+             L 50,84 
+             L 47,59 
+             L 28,59 
+             L 28,57 
+             C 28,49 43,46 43,36 
+             C 43,29 36,27 36,22 Z" />
+  </g>
+</svg>
