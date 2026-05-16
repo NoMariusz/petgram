@@ -50,6 +50,9 @@ public class PetEntity {
 	@ManyToMany(mappedBy = "pets", fetch = FetchType.LAZY)
 	private List<PostEntity> posts = new ArrayList<>();
 
+	@ManyToMany(mappedBy = "followedPets", fetch = FetchType.LAZY)
+	private List<UserEntity> followedByUsers = new ArrayList<>();
+
 	public PetEntity() {
 	}
 
@@ -131,5 +134,13 @@ public class PetEntity {
 
 	public void setPosts(List<PostEntity> posts) {
 		this.posts = posts;
+	}
+
+	public List<UserEntity> getFollowedByUsers() {
+		return followedByUsers;
+	}
+
+	public void setFollowedByUsers(List<UserEntity> followedByUsers) {
+		this.followedByUsers = followedByUsers;
 	}
 }

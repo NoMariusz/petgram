@@ -3,6 +3,8 @@ package com.petgram.petgrambackend.repository;
 import com.petgram.petgrambackend.entity.UserEntity;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
@@ -17,4 +19,13 @@ public interface UsersRepository extends JpaRepository<UserEntity, Long> {
 
 	@EntityGraph(attributePaths = {"role", "pets"})
 	Optional<UserEntity> findWithProfileById(Long id);
+
+	@Query("SELECT COUNT(p) FROM PostEntity p WHERE p.creator.id = :userId")
+	long countCreatedPostsById(@Param("userId") Long userId);
+
+	@Query("SELECT COUNT(f) FROM UserEntity u JOIN u.followers f WHERE u.id = :userId")
+	long countFollowersById(@Param("userId") Long userId);
+
+	@Query("SELECT COUNT(f) + COUNT(p) FROM UserEntity u LEFT JOIN u.following f LEFT JOIN u.followedPets p WHERE u.id = :userId")
+	long countFollowingById(@Param("userId") Long userId);
 }

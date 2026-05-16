@@ -59,6 +59,25 @@ public class UserEntity {
     @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY)
     private List<PostEntity> createdPosts = new ArrayList<>();
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "user_follows",
+        joinColumns = @JoinColumn(name = "follower_id"),
+        inverseJoinColumns = @JoinColumn(name = "following_id")
+    )
+    private List<UserEntity> following = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "following", fetch = FetchType.LAZY)
+    private List<UserEntity> followers = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "user_follows_pets",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "pet_id")
+    )
+    private List<PetEntity> followedPets = new ArrayList<>();
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -220,5 +239,29 @@ public class UserEntity {
 
     public void setCreatedPosts(List<PostEntity> createdPosts) {
         this.createdPosts = createdPosts;
+    }
+
+    public List<UserEntity> getFollowing() {
+        return following;
+    }
+
+    public void setFollowing(List<UserEntity> following) {
+        this.following = following;
+    }
+
+    public List<UserEntity> getFollowers() {
+        return followers;
+    }
+
+    public void setFollowers(List<UserEntity> followers) {
+        this.followers = followers;
+    }
+
+    public List<PetEntity> getFollowedPets() {
+        return followedPets;
+    }
+
+    public void setFollowedPets(List<PetEntity> followedPets) {
+        this.followedPets = followedPets;
     }
 }
