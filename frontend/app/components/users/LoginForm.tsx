@@ -177,7 +177,7 @@ export default function LoginForm() {
 			</div>
 
 			<Link
-				to='/users/register'
+				to='/register'
 				className='text-[15px] leading-[19px] text-[#717171] text-center mt-12'
 			>
 				Dont have an account? <span className='underline'>Sign up</span>

@@ -50,15 +50,13 @@ export default function Home() {
 
 									<div className='flex flex-col gap-4'>
 										<FormMainButton>
-											<Link to='/users/login'>Login</Link>
+											<Link to='/login'>Login</Link>
 										</FormMainButton>
 
 										<OrDivider className='my-1' />
 
 										<FormMainButton>
-											<Link to='/users/register'>
-												Sign in
-											</Link>
+											<Link to='/register'>Sign in</Link>
 										</FormMainButton>
 									</div>
 

@@ -240,7 +240,7 @@ export default function RegisterForm() {
 
 			<p className='text-[15px] leading-[19px] text-center text-[#717171]'>
 				You already have an account?{' '}
-				<Link to='/users/login' className='underline'>
+				<Link to='/login' className='underline'>
 					Log in
 				</Link>
 			</p>

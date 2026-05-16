@@ -6,9 +6,9 @@ export default [
 	route('posts/explore', 'routes/posts/explore.tsx'),
 	route('posts/create', 'routes/posts/createPost.tsx'),
 	route('posts/:id', 'routes/posts/post.tsx'),
-	route('users/login', 'routes/users/login.tsx'),
+	route('login', 'routes/users/login.tsx'),
 	route('forgot-password', 'routes/users/forgot-password.tsx'),
-	route('users/register', 'routes/users/register.tsx'),
+	route('register', 'routes/users/register.tsx'),
 	route('register-email-send', 'routes/users/register-email-send.tsx'),
 	// Support optional id parameter for viewing other users' profiles
 	route('users/profile', 'routes/users/userProfile.tsx'),
