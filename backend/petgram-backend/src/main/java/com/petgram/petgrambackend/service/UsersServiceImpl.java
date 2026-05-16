@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -32,20 +33,22 @@ public class UsersServiceImpl implements UsersService {
 	private final RoleRepository roleRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final UserActivationEmailService userActivationEmailService;
+	private final FileStorageService fileStorageService;
 
 	public UsersServiceImpl(
-			UsersRepository usersRepository,
-			PostRepository postRepository,
-			RoleRepository roleRepository,
-			PasswordEncoder passwordEncoder,
-			UserActivationEmailService userActivationEmailService
-	) {
+            UsersRepository usersRepository,
+            PostRepository postRepository,
+            RoleRepository roleRepository,
+            PasswordEncoder passwordEncoder,
+            UserActivationEmailService userActivationEmailService, FileStorageService fileStorageService
+    ) {
 		this.usersRepository = usersRepository;
 		this.postRepository = postRepository;
 		this.roleRepository = roleRepository;
 		this.passwordEncoder = passwordEncoder;
 		this.userActivationEmailService = userActivationEmailService;
-	}
+        this.fileStorageService = fileStorageService;
+    }
 
 	@Override
 	@Transactional
@@ -68,11 +71,17 @@ public class UsersServiceImpl implements UsersService {
 				defaultRole
 		);
 		user.setBio(request.getBio());
-		user.setProfilePictureUrl(request.getProfilePictureUrl());
 		user.setLocation(request.getLocation());
 		user.setWebsite(request.getWebsite());
 		user.setIsActive(false);
 		user.setIsVerified(false);
+
+		// handle file save
+		String file = request.getProfilePictureImage();
+		if (file != null && !file.isEmpty()) {
+			String imageUrl = fileStorageService.saveBase64(file);
+			user.setProfilePictureUrl(imageUrl); // Stores something like "/uploads/abc-123.jpg"
+		}
 
 		UserEntity savedUser = usersRepository.save(user);
 		userActivationEmailService.sendActivationEmail(savedUser);

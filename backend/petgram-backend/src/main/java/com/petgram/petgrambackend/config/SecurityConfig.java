@@ -26,15 +26,16 @@ public class SecurityConfig {
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(auth -> auth
 						.requestMatchers(HttpMethod.POST, "/login", "/users").permitAll()
-						.requestMatchers(HttpMethod.GET, "/users/me").authenticated()
+						.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+						.requestMatchers("/error").permitAll()
 						.requestMatchers(HttpMethod.POST, "/logout").authenticated()
 						.anyRequest().authenticated()
 				)
 				.exceptionHandling(exceptionHandling -> exceptionHandling
 						.authenticationEntryPoint((request, response, authException) -> {
-							response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+							response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 							response.setContentType("application/json");
-							response.getWriter().write("{\"error\":\"Forbidden\"}");
+							response.getWriter().write("{\"error\":\"Unauthorized\"}");
 						})
 						.accessDeniedHandler((request, response, accessDeniedException) -> {
 							response.setStatus(HttpServletResponse.SC_FORBIDDEN);

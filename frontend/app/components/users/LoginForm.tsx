@@ -8,6 +8,7 @@ import FormMainButton from '../shared/FormMainButton';
 import FormSecondaryButton from '../shared/FormSecondaryButton';
 import OrDivider from '../shared/OrDivider';
 import FormField from './FormField';
+import { LOCAL_STORAGE_ACCESS_TOKEN_KEY } from '~/data/constants';
 
 interface LoginData {
 	username: string;
@@ -48,7 +49,7 @@ function persistAuthSession(response: LoginResponse) {
 	};
 
 	localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authData));
-	localStorage.setItem('petgram.accessToken', response.accessToken);
+	localStorage.setItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY, response.accessToken);
 }
 
 export default function LoginForm() {

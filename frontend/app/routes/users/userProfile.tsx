@@ -7,6 +7,8 @@ import shareIconUrl from '~/assets/share_icon.svg';
 import mapPinIconUrl from '~/assets/map_pin_icon.svg';
 import { apiRequest } from '~/data/api';
 import type { UserProfileResponse } from '~/data/types';
+import { FILE_SERVER_URL } from '~/data/constants';
+import SecureImage from '~/components/shared/SecureImage';
 
 export default function UserProfile() {
 	const params = useParams();
@@ -90,8 +92,11 @@ export default function UserProfile() {
 							<div className='relative'>
 								<div className='h-[128px] w-[128px] rounded-full bg-[#E7E9E4] shadow-[0_0_0_4px_#FFFFFF,0_1px_2px_rgba(0,0,0,0.05)] overflow-hidden'>
 									{userProfile.profilePictureUrl ? (
-										<img
-											src={userProfile.profilePictureUrl}
+										<SecureImage
+											src={
+												FILE_SERVER_URL +
+												userProfile.profilePictureUrl
+											}
 											alt={displayName}
 											className='h-full w-full object-cover'
 										/>

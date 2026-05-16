@@ -199,12 +199,12 @@ export default function RegisterForm() {
 					rows={3}
 				/>
 
-				{/* <FileInputField
+				<FileInputField
 					label='Profile Picture'
 					name='profilePictureImage'
 					onChange={handleChange}
 					accept='image/*'
-				/> */}
+				/>
 
 				<FormField
 					label='Location'

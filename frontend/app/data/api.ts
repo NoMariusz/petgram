@@ -1,3 +1,5 @@
+import { LOCAL_STORAGE_ACCESS_TOKEN_KEY } from './constants';
+
 export interface ApiRequestOptions {
 	jsonBody?: unknown;
 	payload?: FormData;
@@ -9,7 +11,7 @@ function getAccessToken() {
 		return null;
 	}
 
-	return localStorage.getItem('petgram.accessToken');
+	return localStorage.getItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY);
 }
 
 export async function apiRequest(

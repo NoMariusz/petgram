@@ -3,6 +3,7 @@ package com.petgram.petgrambackend.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import org.springframework.web.multipart.MultipartFile;
 
 public class UserCreateRequest {
 
@@ -30,8 +31,7 @@ public class UserCreateRequest {
 	@Size(max = 500, message = "Bio must be at most 500 characters")
 	private String bio;
 
-	@Size(max = 255, message = "Profile picture URL must be at most 255 characters")
-	private String profilePictureUrl;
+	private String profilePictureImage; // base 64 encoded image string
 
 	@Size(max = 100, message = "Location must be at most 100 characters")
 	private String location;
@@ -87,12 +87,12 @@ public class UserCreateRequest {
 		this.bio = bio;
 	}
 
-	public String getProfilePictureUrl() {
-		return profilePictureUrl;
+	public String getProfilePictureImage() {
+		return profilePictureImage;
 	}
 
-	public void setProfilePictureUrl(String profilePictureUrl) {
-		this.profilePictureUrl = profilePictureUrl;
+	public void setProfilePictureImage(String profilePictureImage) {
+		this.profilePictureImage = profilePictureImage;
 	}
 
 	public String getLocation() {
