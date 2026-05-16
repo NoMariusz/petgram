@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
+import { apiRequest } from '../../data/api';
 import FormField from './FormField';
 import FormTextareaField from './FormTextareaField';
 import FileInputField from './FileInputField';
@@ -86,13 +87,8 @@ export default function RegisterForm() {
 		setApiError('');
 
 		try {
-			const apiUrl = import.meta.env.VITE_API_BASE_URL;
-			const response = await fetch(`${apiUrl}/users`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify(formData),
+			const response = await apiRequest('/users', 'POST', {
+				jsonBody: formData,
 			});
 
 			if (!response.ok) {

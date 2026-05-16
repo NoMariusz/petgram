@@ -1,12 +1,13 @@
 import { Link, useNavigate } from 'react-router';
+import { useState } from 'react';
 import loginTextUrl from '../../assets/loginText.svg';
 import googleLogoUrl from '../../assets/googleLogo.png';
 import truthSocialLogoUrl from '../../assets/truthSocialLogo.png';
+import { apiRequest } from '../../data/api';
 import FormMainButton from '../shared/FormMainButton';
 import FormSecondaryButton from '../shared/FormSecondaryButton';
 import OrDivider from '../shared/OrDivider';
 import FormField from './FormField';
-import { useState } from 'react';
 
 interface LoginData {
 	username: string;
@@ -72,23 +73,12 @@ export default function LoginForm() {
 		setLoading(true);
 		setApiError('');
 
-		const apiUrl = import.meta.env.VITE_API_BASE_URL;
-		if (!apiUrl) {
-			setApiError('API URL is not configured.');
-			setLoading(false);
-			return;
-		}
-
 		try {
-			const response = await fetch(`${apiUrl}/login`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
+			const response = await apiRequest('/login', 'POST', {
+				jsonBody: {
 					login: formData.username,
 					password: formData.password,
-				}),
+				},
 			});
 
 			if (!response.ok) {
