@@ -12,7 +12,11 @@ public record UserProfileResponse(
 		String location,
 		String role,
 		List<UserProfilePetResponse> pets,
-		UserPinnedPostResponse pinnedPost
+		UserPinnedPostResponse pinnedPost,
+		Boolean isFollowed,
+		Long postsCount,
+		Long followersCount,
+		Long followingCount
 ) {
 	public record UserProfilePetResponse(
 			Long id,

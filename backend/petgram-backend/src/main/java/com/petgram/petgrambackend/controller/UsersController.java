@@ -39,11 +39,11 @@ public class UsersController {
 
 	@GetMapping("/me/profile")
 	public UserProfileResponse getCurrentUserProfile(Authentication authentication) {
-		return usersService.getCurrentUserProfile(authentication.getName());
+		return usersService.getCurrentUserProfile(authentication);
 	}
 
 	@GetMapping("/{id}/profile")
-	public UserProfileResponse getUserProfileById(@PathVariable Long id) {
-		return usersService.getUserProfileById(id);
+	public UserProfileResponse getUserProfileById(@PathVariable Long id, Authentication authentication) {
+		return usersService.getUserProfileById(id, authentication);
 	}
 }

@@ -1,39 +1,48 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
+import Loader from '~/components/shared/Loader';
 import { apiRequest } from '~/data/api';
+import type { UserProfileResponse } from '~/data/types';
 
 export default function UserProfile() {
 	const params = useParams();
 	const id = params.id;
+	const isOwnProfile = !id; // If no id is provided, it's the current user's profile
+	const [userProfile, setUserProfile] = useState<UserProfileResponse | null>(
+		null,
+	);
+	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
-		if (id) {
-			// Fetch user profile by id
-			apiRequest(`/users/${id}/profile`)
-				.then((data) => {
+		const path = id ? `/users/${id}/profile` : '/users/me/profile';
+		// Fetch user profile by id
+		apiRequest(path)
+			.then((data) => {
+				data.json().then((jsonData) => {
 					// Handle the fetched user profile data
-					console.log('Fetched user profile:', data);
-				})
-				.catch((error) => {
-					// Handle any errors that occur during the fetch
-					console.error('Error fetching user profile:', error);
+					console.log('Fetched user profile:', jsonData);
+					setUserProfile(jsonData as UserProfileResponse);
 				});
-		} else {
-			// Fetch current user's profile
-			apiRequest('/users/me/profile')
-				.then((data) => {
-					// Handle the fetched user profile data
-					console.log('Fetched current user profile:', data);
-				})
-				.catch((error) => {
-					// Handle any errors that occur during the fetch
-					console.error(
-						'Error fetching current user profile:',
-						error,
-					);
-				});
-		}
+			})
+			.catch((error) => {
+				// Handle any errors that occur during the fetch
+				console.error('Error fetching user profile:', error);
+				setError(
+					'Failed to load user profile. Please try again later.',
+				);
+				setUserProfile(null);
+			});
 	}, [id]);
 
-	return <p>{id ? `User ${id} Profile` : 'My User Profile'} res </p>;
+	return (
+		<div>
+			{error ? (
+				<p>{error}</p>
+			) : userProfile == null ? (
+				<Loader />
+			) : (
+				<p>{id ? `User ${id} Profile` : 'My User Profile'}</p>
+			)}
+		</div>
+	);
 }

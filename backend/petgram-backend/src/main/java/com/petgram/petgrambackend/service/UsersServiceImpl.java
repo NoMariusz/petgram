@@ -10,6 +10,7 @@ import com.petgram.petgrambackend.repository.UsersRepository;
 import com.petgram.petgrambackend.view.UserCreateResponse;
 import com.petgram.petgrambackend.view.UserDataResponse;
 import com.petgram.petgrambackend.view.UserProfileResponse;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -113,16 +114,23 @@ public class UsersServiceImpl implements UsersService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public UserProfileResponse getCurrentUserProfile(String username) {
+	public UserProfileResponse getCurrentUserProfile(Authentication authentication) {
+		String username = authentication.getName();
 		UserEntity user = usersRepository.findByUsername(username)
 				.orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "User not found"));
 
-		return getUserProfileById(user.getId());
+		return getUserProfileById(user.getId(), authentication);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public UserProfileResponse getUserProfileById(Long userId) {
+	public UserProfileResponse getUserProfileById(Long userId, Authentication authentication) {
+		String currentUsername = authentication.getName();
+		UserEntity currentUser = usersRepository.findByUsername(currentUsername)
+				.orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Current user not found"));
+		Long currentUserId = currentUser.getId();
+
+		System.out.println("Fetching profile for userId: " + userId + " as currentUserId: " + currentUserId);
 		UserEntity user = usersRepository.findWithProfileById(userId)
 				.orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "User not found"));
 
@@ -148,6 +156,15 @@ public class UsersServiceImpl implements UsersService {
 				))
 				.orElse(null);
 
+		// Check if current user follows this user
+		Boolean isFollowed = currentUser.getFollowing().stream()
+				.anyMatch(followedUser -> followedUser.getId().equals(userId));
+
+		// Calculate counts
+		long postsCount = usersRepository.countCreatedPostsById(userId);
+		long followersCount = usersRepository.countFollowersById(userId);
+		long followingCount = usersRepository.countFollowingById(userId);
+
 		return new UserProfileResponse(
 				user.getId(),
 				user.getUsername(),
@@ -158,7 +175,11 @@ public class UsersServiceImpl implements UsersService {
 				user.getLocation(),
 				roleName,
 				petResponses,
-				pinnedPostResponse
+				pinnedPostResponse,
+				isFollowed,
+				postsCount,
+				followersCount,
+				followingCount
 		);
 	}
 }
