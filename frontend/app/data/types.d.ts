@@ -29,3 +29,12 @@ export interface UserProfileResponse {
 	followingCount: number;
 	isOwnProfile: boolean;
 }
+
+export interface PostListItem {
+	id: number;
+	text: string;
+	postPictureUrl: string;
+	creatorName: string;
+	createdAt: LocalDateTime;
+	likesCount: number;
+}

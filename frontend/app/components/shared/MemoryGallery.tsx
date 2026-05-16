@@ -1,5 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
+import { apiRequest } from '~/data/api';
+import type { PostListItem } from '~/data/types';
+import SecureImage from './SecureImage';
+import PostVerticalListItem from './PostVerticalListItem';
+import PostCardItem from './PostCardItem';
 
 function GridIcon() {
 	return (
@@ -49,13 +54,7 @@ function ListIcon() {
 	);
 }
 
-export interface MemoryGalleryItem {
-	id: number;
-	imageUrl?: string | null;
-	title?: string;
-	excerpt?: string;
-	likesCount?: number;
-}
+export interface MemoryGalleryItem extends PostListItem {}
 
 interface MemoryGalleryProps {
 	relatedObjectType: 'user' | 'pet';
@@ -66,9 +65,32 @@ export default function MemoryGallery({
 	relatedObjectType,
 	id,
 }: MemoryGalleryProps) {
-	const [view, setView] = useState<'grid' | 'list'>('list');
+	const [view, setView] = useState<'grid' | 'list'>('grid');
 
 	const [items, setItems] = useState<MemoryGalleryItem[]>([]);
+
+	useEffect(() => {
+		async function fetchMemories() {
+			const url =
+				relatedObjectType === 'user'
+					? `/posts/users/${id}/all`
+					: `/posts/pets/${id}/memories`;
+			try {
+				const response = await apiRequest(url);
+				if (!response.ok) {
+					throw new Error(
+						`Failed to fetch memories: ${response.statusText}`,
+					);
+				}
+				const data = await response.json();
+				setItems(data);
+			} catch (error) {
+				console.error('Error fetching memories:', error);
+			}
+		}
+
+		fetchMemories();
+	}, [relatedObjectType, id]);
 
 	return (
 		<section className='mt-10'>
@@ -107,51 +129,26 @@ export default function MemoryGallery({
 			<div className='mt-4'>
 				{items.length === 0 ? (
 					<div className='rounded-[20px] bg-[#FFFEFB] shadow-[0_12px_32px_rgba(48,51,48,0.06)] p-6 text-sm text-[#5D605C]'>
-						No memories yet for {relatedObjectType} #{id}.
+						No memories yet for this {relatedObjectType}.
 					</div>
 				) : view === 'grid' ? (
 					<div className='grid grid-cols-1 gap-6 sm:grid-cols-2'>
 						{items.map((item) => (
-							<Link
+							<PostCardItem
+								id={item.id}
+								data={item}
 								key={item.id}
-								to={`/posts/${item.id}`}
-								className='overflow-hidden rounded-[15px] bg-[#FFFEFB] shadow-[0_12px_32px_rgba(48,51,48,0.06)]'
-							>
-								<div className='aspect-[4/3] bg-[#E7E9E4]'>
-									{item.imageUrl && (
-										<img
-											src={item.imageUrl}
-											alt={item.title ?? 'Memory'}
-											className='h-full w-full object-cover'
-										/>
-									)}
-								</div>
-								<div className='p-4'>
-									<h3 className='text-sm font-semibold text-[#303330]'>
-										{item.title ?? 'Memory'}
-									</h3>
-								</div>
-							</Link>
+							/>
 						))}
 					</div>
 				) : (
 					<div className='space-y-6'>
 						{items.map((item) => (
-							<Link
+							<PostVerticalListItem
 								key={item.id}
-								to={`/posts/${item.id}`}
-								className='block overflow-hidden rounded-[15px] bg-[#FFFEFB] shadow-[0_12px_32px_rgba(48,51,48,0.06)]'
-							>
-								<div className='p-6'>
-									<h3 className='text-base font-semibold text-[#303330]'>
-										{item.title ?? 'Memory'}
-									</h3>
-									<p className='mt-2 text-sm text-[#5D605C]'>
-										{item.excerpt ??
-											'A beautiful moment worth sharing.'}
-									</p>
-								</div>
-							</Link>
+								id={item.id}
+								data={item}
+							/>
 						))}
 					</div>
 				)}
