@@ -1,16 +1,22 @@
 package com.petgram.petgrambackend.service;
 
 import com.petgram.petgrambackend.dto.UserCreateRequest;
+import com.petgram.petgrambackend.entity.PostEntity;
 import com.petgram.petgrambackend.entity.RoleEntity;
 import com.petgram.petgrambackend.entity.UserEntity;
+import com.petgram.petgrambackend.repository.PostRepository;
 import com.petgram.petgrambackend.repository.RoleRepository;
 import com.petgram.petgrambackend.repository.UsersRepository;
 import com.petgram.petgrambackend.view.UserCreateResponse;
 import com.petgram.petgrambackend.view.UserDataResponse;
+import com.petgram.petgrambackend.view.UserProfileResponse;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -21,17 +27,20 @@ public class UsersServiceImpl implements UsersService {
 	private static final String DEFAULT_ROLE_NAME = "USER";
 
 	private final UsersRepository usersRepository;
+	private final PostRepository postRepository;
 	private final RoleRepository roleRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final UserActivationEmailService userActivationEmailService;
 
 	public UsersServiceImpl(
 			UsersRepository usersRepository,
+			PostRepository postRepository,
 			RoleRepository roleRepository,
 			PasswordEncoder passwordEncoder,
 			UserActivationEmailService userActivationEmailService
 	) {
 		this.usersRepository = usersRepository;
+		this.postRepository = postRepository;
 		this.roleRepository = roleRepository;
 		this.passwordEncoder = passwordEncoder;
 		this.userActivationEmailService = userActivationEmailService;
@@ -99,6 +108,57 @@ public class UsersServiceImpl implements UsersService {
 				active,
 				verified,
 				user.getCreatedAt()
+		);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public UserProfileResponse getCurrentUserProfile(String username) {
+		UserEntity user = usersRepository.findByUsername(username)
+				.orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "User not found"));
+
+		return getUserProfileById(user.getId());
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public UserProfileResponse getUserProfileById(Long userId) {
+		UserEntity user = usersRepository.findWithProfileById(userId)
+				.orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "User not found"));
+
+		String roleName = user.getRole() == null ? null : user.getRole().getName();
+
+		List<UserProfileResponse.UserProfilePetResponse> petResponses = user.getPets().stream()
+				.map(pet -> new UserProfileResponse.UserProfilePetResponse(
+						pet.getId(),
+						pet.getName(),
+						pet.getProfilePictureUrl()
+				))
+				.toList();
+
+		Optional<PostEntity> pinnedPost = postRepository.findFirstByCreatorIdAndIsPinnedTrueOrderByUpdatedAtDesc(user.getId());
+
+		UserProfileResponse.UserPinnedPostResponse pinnedPostResponse = pinnedPost
+				.map(post -> new UserProfileResponse.UserPinnedPostResponse(
+						post.getId(),
+						post.getText(),
+						post.getPostPictureUrl(),
+						post.getCreator() == null ? null : post.getCreator().getUsername(),
+						post.getLikedByUsers() == null ? 0L : post.getLikedByUsers().size()
+				))
+				.orElse(null);
+
+		return new UserProfileResponse(
+				user.getId(),
+				user.getUsername(),
+				user.getFirstName(),
+				user.getLastName(),
+				user.getBio(),
+				user.getProfilePictureUrl(),
+				user.getLocation(),
+				roleName,
+				petResponses,
+				pinnedPostResponse
 		);
 	}
 }
