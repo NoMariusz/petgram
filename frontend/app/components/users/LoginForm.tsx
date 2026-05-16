@@ -8,7 +8,10 @@ import FormMainButton from '../shared/FormMainButton';
 import FormSecondaryButton from '../shared/FormSecondaryButton';
 import OrDivider from '../shared/OrDivider';
 import FormField from '../shared/formFields/FormField';
-import { LOCAL_STORAGE_ACCESS_TOKEN_KEY } from '~/data/constants';
+import {
+	LOCAL_STORAGE_ACCESS_TOKEN_KEY,
+	LOCAL_STORAGE_AUTH_STORAGE_KEY,
+} from '~/data/constants';
 
 interface LoginData {
 	username: string;
@@ -31,8 +34,6 @@ interface ApiError {
 	error?: string;
 }
 
-const AUTH_STORAGE_KEY = 'petgram.auth';
-
 function persistAuthSession(response: LoginResponse) {
 	const expiresAt = Date.now() + response.expiresInSeconds * 1000;
 	const authData = {
@@ -48,7 +49,10 @@ function persistAuthSession(response: LoginResponse) {
 		expiresAt,
 	};
 
-	localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authData));
+	localStorage.setItem(
+		LOCAL_STORAGE_AUTH_STORAGE_KEY,
+		JSON.stringify(authData),
+	);
 	localStorage.setItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY, response.accessToken);
 }
 

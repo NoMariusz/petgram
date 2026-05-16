@@ -1,11 +1,16 @@
-import type { ReactNode } from 'react';
-import { Link } from 'react-router';
+import { useState, type ReactNode } from 'react';
+import { Link, useNavigate } from 'react-router';
 import logoUrl from '../../assets/logo.svg';
 import homeIconUrl from '../../assets/home_icon.svg';
 import searchIconUrl from '../../assets/search_icon.svg';
 import addIconUrl from '../../assets/add_icon.svg';
 import messageIconUrl from '../../assets/message_icon.svg';
 import profileIconUrl from '../../assets/profile_icon.svg';
+import { apiRequest } from '~/data/api';
+import {
+	LOCAL_STORAGE_ACCESS_TOKEN_KEY,
+	LOCAL_STORAGE_AUTH_STORAGE_KEY,
+} from '~/data/constants';
 
 interface LoggedContainerProps {
 	children: ReactNode;
@@ -39,9 +44,61 @@ export default function LoggedContainer({
 	children,
 	activeItem = 'profile',
 }: LoggedContainerProps) {
+	const navigate = useNavigate();
+	const [menuOpen, setMenuOpen] = useState(false);
+
+	const handleLogout = async () => {
+		try {
+			const response = await apiRequest('/logout', 'POST');
+			if (response.ok) {
+				navigate('/');
+			}
+			localStorage.removeItem(LOCAL_STORAGE_AUTH_STORAGE_KEY);
+			localStorage.removeItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY);
+		} finally {
+			setMenuOpen(false);
+		}
+	};
+
 	return (
 		<main className='min-h-screen bg-[#FAF9F6] px-6 pb-24'>
 			<header className='sticky top-0 z-20 bg-[#FAF9F6] relative flex justify-center pt-6 pb-10'>
+				<div className='absolute top-8 right-2 md:right-8'>
+					<div className='relative'>
+						<button
+							type='button'
+							aria-label='Open menu'
+							onClick={() => setMenuOpen((prev) => !prev)}
+							className='h-9 w-9 rounded-full bg-white shadow-[0_4px_12px_rgba(48,51,48,0.08)] flex items-center justify-center'
+						>
+							<span className='flex flex-col gap-1'>
+								<span className='h-[2px] w-4 rounded-full bg-[#303330]' />
+								<span className='h-[2px] w-4 rounded-full bg-[#303330]' />
+								<span className='h-[2px] w-4 rounded-full bg-[#303330]' />
+							</span>
+						</button>
+
+						{menuOpen && (
+							<div className='absolute right-0 mt-2 w-44 rounded-[16px] bg-[#FFFEFB] shadow-[0_12px_32px_rgba(48,51,48,0.12)] p-2'>
+								<Link
+									to='/settings'
+									className='block rounded-[12px] px-3 py-2 text-sm font-semibold text-[#303330] hover:bg-[#F4F4F0]'
+									onClick={() => setMenuOpen(false)}
+								>
+									Settings
+								</Link>
+								<button
+									type='button'
+									onClick={handleLogout}
+									className='w-full text-left rounded-[12px] px-3 py-2 text-sm font-semibold text-[#303330] hover:bg-[#F4F4F0]'
+								>
+									Logout
+								</button>
+							</div>
+						)}
+					</div>
+				</div>
+
 				<div
 					className='absolute left-6 md:left-12 top-0'
 					id='leftTopLogo'

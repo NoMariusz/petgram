@@ -16,5 +16,5 @@ export default [
 	route('users/profile/:id', 'routes/users/userProfileParam.tsx'),
 	route('pets/add', 'routes/pets/addPet.tsx'),
 	route('pets/profile/:id', 'routes/pets/petProfile.tsx'),
-	route('core/settings', 'routes/core/settings.tsx'),
+	route('settings', 'routes/core/settings.tsx'),
 ] satisfies RouteConfig;
