@@ -17,6 +17,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -108,6 +109,60 @@ class PetsServiceCreateTests {
 
 		assertSame(NOT_FOUND, ex.getStatusCode());
 		assertEquals("Current user not found", ex.getReason());
+	}
+
+	@Test
+	@DisplayName("getPetProfile returns pet owner and counters")
+	void getPetProfileReturnsPetOwnerAndCounters() {
+		PetRepository petRepository = mock(PetRepository.class);
+		UsersRepository usersRepository = mock(UsersRepository.class);
+		FileStorageService fileStorageService = mock(FileStorageService.class);
+		PetsServiceImpl service = new PetsServiceImpl(petRepository, usersRepository, fileStorageService);
+
+		UserEntity owner = createUser();
+		PetEntity pet = new PetEntity("Luna", owner);
+		ReflectionTestUtils.setField(pet, "id", 20L);
+		pet.setBio("Small dog with a big heart.");
+		pet.setBornAt(LocalDateTime.of(2022, 5, 12, 0, 0));
+		pet.setProfilePictureUrl("/data/seed/dog_profile_picture.png");
+
+		Authentication authentication = new UsernamePasswordAuthenticationToken("john", null);
+		when(usersRepository.findByUsername("john")).thenReturn(Optional.of(owner));
+		when(petRepository.findWithOwnerById(20L)).thenReturn(Optional.of(pet));
+		when(petRepository.countPostsByPetId(20L)).thenReturn(3L);
+		when(petRepository.countFollowersByPetId(20L)).thenReturn(5L);
+
+		var response = service.getPetProfile(20L, authentication);
+
+		assertEquals(20L, response.id());
+		assertEquals("Luna", response.name());
+		assertEquals("Small dog with a big heart.", response.bio());
+		assertEquals("/data/seed/dog_profile_picture.png", response.profilePictureUrl());
+		assertEquals(1L, response.ownerId());
+		assertEquals("john", response.ownerUsername());
+		assertEquals("John Doe", response.ownerDisplayName());
+		assertEquals(true, response.isOwnProfile());
+		assertEquals(3L, response.memoriesCount());
+		assertEquals(5L, response.followersCount());
+	}
+
+	@Test
+	@DisplayName("getPetProfile throws NOT_FOUND for unknown pet")
+	void getPetProfileThrowsWhenPetIsMissing() {
+		PetRepository petRepository = mock(PetRepository.class);
+		UsersRepository usersRepository = mock(UsersRepository.class);
+		FileStorageService fileStorageService = mock(FileStorageService.class);
+		PetsServiceImpl service = new PetsServiceImpl(petRepository, usersRepository, fileStorageService);
+
+		UserEntity owner = createUser();
+		Authentication authentication = new UsernamePasswordAuthenticationToken("john", null);
+		when(usersRepository.findByUsername("john")).thenReturn(Optional.of(owner));
+		when(petRepository.findWithOwnerById(404L)).thenReturn(Optional.empty());
+
+		ResponseStatusException ex = assertThrows(ResponseStatusException.class, () -> service.getPetProfile(404L, authentication));
+
+		assertSame(NOT_FOUND, ex.getStatusCode());
+		assertEquals("Pet not found", ex.getReason());
 	}
 
 	private UserEntity createUser() {
