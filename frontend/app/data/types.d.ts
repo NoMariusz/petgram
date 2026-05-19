@@ -66,3 +66,17 @@ export interface PetCreateResponse {
 	ownerId: number;
 	ownerUsername: string;
 }
+
+export interface PetProfileResponse {
+	id: number;
+	name: string;
+	bio: string | null;
+	profilePictureUrl: string | null;
+	bornAt: string | null;
+	ownerId: number;
+	ownerUsername: string;
+	ownerDisplayName: string;
+	isOwnProfile: boolean;
+	memoriesCount: number;
+	followersCount: number;
+}
