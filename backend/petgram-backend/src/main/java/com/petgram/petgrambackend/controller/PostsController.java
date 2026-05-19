@@ -29,4 +29,12 @@ public class PostsController {
         }
         return postsService.getPostsByUser(userId);
     }
+
+    @GetMapping("/pets/{id}/memories")
+    public List<PostSummaryResponse> getPostsByPet(@PathVariable("id") Long petId, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Forbidden");
+        }
+        return postsService.getPostsByPet(petId);
+    }
 }
