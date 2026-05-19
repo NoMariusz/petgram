@@ -12,6 +12,7 @@ public record PetProfileResponse(
 		String ownerUsername,
 		String ownerDisplayName,
 		boolean isOwnProfile,
+		boolean isFollowed,
 		long memoriesCount,
 		long followersCount
 ) {
