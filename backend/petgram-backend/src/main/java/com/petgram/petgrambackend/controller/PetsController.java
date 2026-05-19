@@ -1,7 +1,9 @@
 package com.petgram.petgrambackend.controller;
 
 import com.petgram.petgrambackend.dto.PetCreateRequest;
+import com.petgram.petgrambackend.dto.PetUpdateRequest;
 import com.petgram.petgrambackend.service.PetsService;
+import com.petgram.petgrambackend.view.FollowResponse;
 import com.petgram.petgrambackend.view.PetCreateResponse;
 import com.petgram.petgrambackend.view.PetProfileResponse;
 import jakarta.validation.Valid;
@@ -9,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,5 +40,24 @@ public class PetsController {
 	@GetMapping("/{id}")
 	public PetProfileResponse getPetProfile(@PathVariable Long id, Authentication authentication) {
 		return petsService.getPetProfile(id, authentication);
+	}
+
+	@PatchMapping("/{id}")
+	public PetProfileResponse updatePet(
+			@PathVariable Long id,
+			@Valid @RequestBody PetUpdateRequest request,
+			Authentication authentication
+	) {
+		return petsService.updatePet(id, request, authentication);
+	}
+
+	@PostMapping("/{id}/follow")
+	public FollowResponse followPet(@PathVariable Long id, Authentication authentication) {
+		return petsService.followPet(id, authentication);
+	}
+
+	@PostMapping("/{id}/unfollow")
+	public FollowResponse unfollowPet(@PathVariable Long id, Authentication authentication) {
+		return petsService.unfollowPet(id, authentication);
 	}
 }
