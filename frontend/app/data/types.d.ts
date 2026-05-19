@@ -1,4 +1,4 @@
-interface ApiError {
+export interface ApiError {
 	error: string;
 }
 
@@ -55,4 +55,14 @@ export interface PostListItem {
 	creatorName: string;
 	createdAt: LocalDateTime;
 	likesCount: number;
+}
+
+export interface PetCreateResponse {
+	id: number;
+	name: string;
+	bio: string | null;
+	profilePictureUrl: string | null;
+	bornAt: string | null;
+	ownerId: number;
+	ownerUsername: string;
 }
