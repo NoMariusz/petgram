@@ -4,6 +4,7 @@ import LoggedContainer from '~/components/shared/LoggedContainer';
 import Loader from '~/components/shared/Loader';
 import MemoryGallery from '~/components/shared/MemoryGallery';
 import SecureImage from '~/components/shared/SecureImage';
+import SimpleAccentButton from '~/components/shared/SimpleAccentButton';
 import shareIconUrl from '~/assets/share_icon.svg';
 import { apiRequest } from '~/data/api';
 import type { PetProfileResponse } from '~/data/types';
@@ -52,6 +53,7 @@ export default function PetProfile() {
 	const [petProfile, setPetProfile] =
 		useState<PetProfileResponse | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
+	const [isFollowLoading, setIsFollowLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
@@ -90,6 +92,36 @@ export default function PetProfile() {
 
 	const handleShareProfile = () => {
 		console.log('Share pet profile clicked');
+	};
+
+	const handleFollowToggle = async () => {
+		if (!petProfile || petProfile.isOwnProfile || isFollowLoading) {
+			return;
+		}
+
+		setIsFollowLoading(true);
+		const path = petProfile.isFollowed
+			? `/pets/${petProfile.id}/unfollow`
+			: `/pets/${petProfile.id}/follow`;
+
+		try {
+			const response = await apiRequest(path, 'POST');
+			if (!response.ok) {
+				throw new Error(`Request failed (${response.status})`);
+			}
+
+			setPetProfile({
+				...petProfile,
+				isFollowed: !petProfile.isFollowed,
+				followersCount: petProfile.isFollowed
+					? Math.max(0, petProfile.followersCount - 1)
+					: petProfile.followersCount + 1,
+			});
+		} catch (error) {
+			console.error('Failed to toggle pet follow status:', error);
+		} finally {
+			setIsFollowLoading(false);
+		}
 	};
 
 	return (
@@ -156,10 +188,27 @@ export default function PetProfile() {
 												className='h-5 w-5'
 											/>
 										</button>
-										{petProfile.isOwnProfile && (
-											<span className='rounded-full bg-gradient-to-br from-[#7D5739] to-[#FECAA5] px-6 py-3 text-sm font-bold text-[#FFF7F4]'>
-												My pet
-											</span>
+										{petProfile.isOwnProfile ? (
+											<SimpleAccentButton type='button'>
+												<Link
+													to={`/pets/profile/${petProfile.id}/edit`}
+												>
+													Edit pet
+												</Link>
+											</SimpleAccentButton>
+										) : (
+											<SimpleAccentButton
+												id='followPetButton'
+												type='button'
+												onClick={handleFollowToggle}
+												disabled={isFollowLoading}
+											>
+												{isFollowLoading
+													? 'Saving...'
+													: petProfile.isFollowed
+														? 'Following'
+														: 'Follow'}
+											</SimpleAccentButton>
 										)}
 									</div>
 								</div>

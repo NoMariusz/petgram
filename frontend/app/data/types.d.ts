@@ -77,6 +77,7 @@ export interface PetProfileResponse {
 	ownerUsername: string;
 	ownerDisplayName: string;
 	isOwnProfile: boolean;
+	isFollowed: boolean;
 	memoriesCount: number;
 	followersCount: number;
 }
