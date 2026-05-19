@@ -6,6 +6,7 @@ import com.petgram.petgrambackend.entity.UserEntity;
 import com.petgram.petgrambackend.repository.PetRepository;
 import com.petgram.petgrambackend.repository.UsersRepository;
 import com.petgram.petgrambackend.view.PetCreateResponse;
+import com.petgram.petgrambackend.view.PetProfileResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,6 +50,39 @@ public class PetsServiceImpl implements PetsService {
 
 		PetEntity savedPet = petRepository.save(pet);
 		return toResponse(savedPet);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public PetProfileResponse getPetProfile(Long petId, Authentication authentication) {
+		UserEntity currentUser = usersRepository.findByUsername(authentication.getName())
+				.orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Current user not found"));
+
+		PetEntity pet = petRepository.findWithOwnerById(petId)
+				.orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Pet not found"));
+
+		UserEntity owner = pet.getOwner();
+		String ownerDisplayName = owner == null
+				? null
+				: (owner.getFirstName() + " " + owner.getLastName()).trim();
+		if (ownerDisplayName != null && ownerDisplayName.isBlank()) {
+			ownerDisplayName = owner.getUsername();
+		}
+
+		Long ownerId = owner == null ? null : owner.getId();
+		return new PetProfileResponse(
+				pet.getId(),
+				pet.getName(),
+				pet.getBio(),
+				pet.getProfilePictureUrl(),
+				pet.getBornAt(),
+				ownerId,
+				owner == null ? null : owner.getUsername(),
+				ownerDisplayName,
+				ownerId != null && ownerId.equals(currentUser.getId()),
+				petRepository.countPostsByPetId(pet.getId()),
+				petRepository.countFollowersByPetId(pet.getId())
+		);
 	}
 
 	private PetCreateResponse toResponse(PetEntity pet) {

@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface PostsService {
     List<PostSummaryResponse> getPostsByUser(Long userId);
+
+    List<PostSummaryResponse> getPostsByPet(Long petId);
 }

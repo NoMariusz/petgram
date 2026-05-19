@@ -19,13 +19,23 @@ public class PostsServiceImpl implements PostsService {
     @Override
     public List<PostSummaryResponse> getPostsByUser(Long userId) {
         List<PostEntity> posts = postRepository.findAllWithLikesByCreatorId(userId);
-        return posts.stream().map(p -> new PostSummaryResponse(
-                p.getId(),
-                p.getText(),
-                p.getPostPictureUrl(),
-                p.getCreator() == null ? null : p.getCreator().getUsername(),
-                p.getCreatedAt(),
-                p.getLikedByUsers() == null ? 0L : p.getLikedByUsers().size()
-        )).toList();
+        return posts.stream().map(this::toSummaryResponse).toList();
+    }
+
+    @Override
+    public List<PostSummaryResponse> getPostsByPet(Long petId) {
+        List<PostEntity> posts = postRepository.findAllWithLikesByPetId(petId);
+        return posts.stream().map(this::toSummaryResponse).toList();
+    }
+
+    private PostSummaryResponse toSummaryResponse(PostEntity post) {
+        return new PostSummaryResponse(
+                post.getId(),
+                post.getText(),
+                post.getPostPictureUrl(),
+                post.getCreator() == null ? null : post.getCreator().getUsername(),
+                post.getCreatedAt(),
+                post.getLikedByUsers() == null ? 0L : post.getLikedByUsers().size()
+        );
     }
 }
