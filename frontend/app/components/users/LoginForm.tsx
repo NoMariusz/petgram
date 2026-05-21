@@ -84,6 +84,7 @@ export default function LoginForm() {
 					login: formData.username,
 					password: formData.password,
 				},
+				skipLoginRedirect: true,
 			});
 
 			if (!response.ok) {

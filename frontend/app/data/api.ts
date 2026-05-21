@@ -4,6 +4,7 @@ export interface ApiRequestOptions {
 	jsonBody?: unknown;
 	payload?: FormData;
 	headers?: HeadersInit;
+	skipLoginRedirect?: boolean;
 }
 
 function getAccessToken() {
@@ -38,9 +39,15 @@ export async function apiRequest(
 		body = JSON.stringify(options.jsonBody);
 	}
 
-	return fetch(`${apiUrl}${path}`, {
+	const res = await fetch(`${apiUrl}${path}`, {
 		method,
 		headers,
 		body,
 	});
+
+	if (res.status === 401 && !options.skipLoginRedirect) {
+		// Handle unauthorized access, e.g., redirect to login page
+		window.location.href = '/login';
+	}
+	return res;
 }

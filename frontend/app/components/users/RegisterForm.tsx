@@ -86,6 +86,7 @@ export default function RegisterForm() {
 		try {
 			const response = await apiRequest('/users', 'POST', {
 				jsonBody: formData,
+				skipLoginRedirect: true,
 			});
 
 			if (!response.ok) {
