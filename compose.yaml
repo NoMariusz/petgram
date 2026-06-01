@@ -1,0 +1,8 @@
+include:
+- "./backend/backend.yaml"
+- "./frontend/frontend.yaml"
+
+networks:
+  backfront:
+    name: backfront
+    internal: false

@@ -1,11 +1,13 @@
 FROM node:20-alpine AS development-dependencies-env
 COPY . /app
 WORKDIR /app
+RUN npm install
 RUN npm ci
 
 FROM node:20-alpine AS production-dependencies-env
 COPY ./package.json package-lock.json /app/
 WORKDIR /app
+RUN npm install
 RUN npm ci --omit=dev
 
 FROM node:20-alpine AS build-env

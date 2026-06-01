@@ -27,6 +27,7 @@ public class SecurityConfig {
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(auth -> auth
 						.requestMatchers(HttpMethod.POST, "/login", "/users").permitAll()
+						.requestMatchers(HttpMethod.GET, "/healthcheck").permitAll()
 						.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 						.requestMatchers("/error").permitAll()
 						.requestMatchers(HttpMethod.POST, "/logout").authenticated()
