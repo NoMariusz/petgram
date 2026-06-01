@@ -6,7 +6,7 @@ RUN --mount=type=cache,target=/home/gradle/.gradle \
     gradle dependencies --no-daemon
 COPY petgram-backend/.env-template /app/.env
 COPY petgram-backend /app
-RUN --mount=type=cache,target=/home/gradle/.gradle \ 
+RUN --mount=type=cache,target=/home/gradle/.gradle \
     gradle build -x test --build-cache
 
 FROM gradle:jdk17-alpine
