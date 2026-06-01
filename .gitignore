@@ -1,0 +1,6 @@
+# intellij
+gradlew
+gradlew.bat
+
+# docker
+.env
