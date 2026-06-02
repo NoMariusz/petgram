@@ -1,12 +1,11 @@
 package com.petgram.petgrambackend.controller;
 
+import com.petgram.petgrambackend.dto.PostCreateRequest;
 import com.petgram.petgrambackend.service.PostsService;
 import com.petgram.petgrambackend.view.PostSummaryResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -36,5 +35,21 @@ public class PostsController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Forbidden");
         }
         return postsService.getPostsByPet(petId);
+    }
+
+    @GetMapping("/{id}")
+    public PostSummaryResponse getPostById(@PathVariable("id") Long id, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Forbidden");
+        }
+        return postsService.getPostById(id);
+    }
+
+    @PostMapping
+    public PostSummaryResponse postPost(@Valid @RequestBody PostCreateRequest req, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Forbidden");
+        }
+        return postsService.postPost(req, authentication);
     }
 }
