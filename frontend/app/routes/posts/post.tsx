@@ -244,7 +244,7 @@ export default function Post() {
 							</span>
 							{post.pets.map((petName, idx) => {
 								const petId = petNameToIdMap[petName];
-								const targetLink = petId ? `/pets/profile/${petId}` : (authorId ? `/users/${authorId}` : '/users/profile');
+								const targetLink = petId ? `/pets/profile/${petId}` : (authorId ? `/users/profile/${authorId}` : '/users/profile');
 
 								return (
 									<Link
