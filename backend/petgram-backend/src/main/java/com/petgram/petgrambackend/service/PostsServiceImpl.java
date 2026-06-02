@@ -21,10 +21,15 @@ public class PostsServiceImpl implements PostsService {
 
     private final PostRepository postRepository;
     private final UsersRepository usersRepository;
+    private final FileStorageService fileStorageService;
 
-    public PostsServiceImpl(PostRepository postRepository, UsersRepository usersRepository) {
+    public PostsServiceImpl(
+            PostRepository postRepository,
+            UsersRepository usersRepository,
+            FileStorageService fileStorageService) {
         this.postRepository = postRepository;
         this.usersRepository = usersRepository;
+        this.fileStorageService = fileStorageService;
     }
 
     @Override
@@ -57,7 +62,7 @@ public class PostsServiceImpl implements PostsService {
         );
 
         if (req.getPostPicture() != null && !req.getPostPicture().isBlank())
-            ent.setPostPictureUrl(req.getPostPicture());
+            ent.setPostPictureUrl(fileStorageService.saveBase64(req.getPostPicture()));
 
         if (!req.getPets().isEmpty() && req.getPets().stream().noneMatch(String::isBlank)) {
             List<PetEntity> authorPetsMentioned = author.getPets().stream()

@@ -62,7 +62,7 @@ export default function CreatePostForm() {
 			if (!file) {
 				setFormData((prev) => ({
 					...prev,
-					[name]: '',
+					postPicture: '',
 				}));
 				return;
 			}
@@ -71,7 +71,7 @@ export default function CreatePostForm() {
 			reader.onload = (event) => {
 				setFormData((prev) => ({
 					...prev,
-					[name]: event.target?.result as string,
+					postPicture: event.target?.result as string,
 				}));
 			};
 			reader.readAsDataURL(file);
