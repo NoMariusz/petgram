@@ -293,4 +293,9 @@ public class UsersServiceImpl implements UsersService {
 				updatedUser.getUsername()
 		);
 	}
+
+	@Override
+	public UserDataResponse getByUsername(String username, Authentication authentication) {
+		return this.getCurrentUserData(username);
+	}
 }

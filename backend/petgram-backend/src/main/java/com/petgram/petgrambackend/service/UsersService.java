@@ -20,4 +20,6 @@ public interface UsersService {
 	FollowResponse unfollow(Long unfollowUserId, Authentication authentication);
 
 	UserUpdateResponse updateCurrentUser(UserUpdateRequest request, Authentication authentication);
+
+	UserDataResponse getByUsername(String username, Authentication authentication);
 }

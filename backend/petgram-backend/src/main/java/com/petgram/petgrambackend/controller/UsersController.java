@@ -55,4 +55,9 @@ public class UsersController {
 	public UserUpdateResponse updateCurrentUser(@Valid @RequestBody UserUpdateRequest request, Authentication authentication) {
 		return usersService.updateCurrentUser(request, authentication);
 	}
+
+	@GetMapping("/{username}")
+	public UserDataResponse getByUsername(@PathVariable("username") String username, Authentication authentication) {
+		return usersService.getByUsername(username, authentication);
+	}
 }
