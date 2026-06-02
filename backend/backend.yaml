@@ -7,6 +7,8 @@ services:
     restart: unless-stopped
     ports:
       - "8080:8080"
+    volumes:
+      - "TMP_backend-db:/app/data"
     networks:
       - backfront
       - backend-db
@@ -33,6 +35,7 @@ services:
 
 volumes:
   backend-db:
+  TMP_backend-db:
 
 networks:
   backend-db:
