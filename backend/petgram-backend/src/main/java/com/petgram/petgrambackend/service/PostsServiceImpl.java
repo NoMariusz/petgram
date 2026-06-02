@@ -1,11 +1,16 @@
 package com.petgram.petgrambackend.service;
 
+import com.petgram.petgrambackend.dto.PostCommentRequest;
 import com.petgram.petgrambackend.dto.PostCreateRequest;
 import com.petgram.petgrambackend.entity.PetEntity;
+import com.petgram.petgrambackend.entity.PostCommentEntity;
 import com.petgram.petgrambackend.entity.PostEntity;
 import com.petgram.petgrambackend.entity.UserEntity;
+import com.petgram.petgrambackend.repository.PostCommentsRepository;
 import com.petgram.petgrambackend.repository.PostRepository;
 import com.petgram.petgrambackend.repository.UsersRepository;
+import com.petgram.petgrambackend.view.PostCommentSummaryResponse;
+import com.petgram.petgrambackend.view.PostLikeSummaryResponse;
 import com.petgram.petgrambackend.view.PostSummaryResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -21,14 +26,17 @@ public class PostsServiceImpl implements PostsService {
 
     private final PostRepository postRepository;
     private final UsersRepository usersRepository;
+    private final PostCommentsRepository postCommentsRepository;
     private final FileStorageService fileStorageService;
 
     public PostsServiceImpl(
             PostRepository postRepository,
             UsersRepository usersRepository,
+            PostCommentsRepository postCommentsRepository,
             FileStorageService fileStorageService) {
         this.postRepository = postRepository;
         this.usersRepository = usersRepository;
+        this.postCommentsRepository = postCommentsRepository;
         this.fileStorageService = fileStorageService;
     }
 
@@ -64,7 +72,7 @@ public class PostsServiceImpl implements PostsService {
         if (req.getPostPicture() != null && !req.getPostPicture().isBlank())
             ent.setPostPictureUrl(fileStorageService.saveBase64(req.getPostPicture()));
 
-        if (!req.getPets().isEmpty() && req.getPets().stream().noneMatch(String::isBlank)) {
+        if (req.getPets() != null && !req.getPets().isEmpty() && req.getPets().stream().noneMatch(String::isBlank)) {
             List<PetEntity> authorPetsMentioned = author.getPets().stream()
                     .filter(x -> req.getPets().contains(x.getName())).toList();
 
@@ -77,6 +85,83 @@ public class PostsServiceImpl implements PostsService {
         return this.toSummaryResponse(postRepository.save(ent));
     }
 
+    @Override
+    public PostLikeSummaryResponse toggleLikePost(Long postId, Authentication authentication) {
+        UserEntity liker = this.usersRepository.findByUsername(authentication.getName())
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Current user not found"));
+
+        PostEntity ent = this.postRepository.findById(postId)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Post not found"));
+
+        // ideally this should be a set and not a list...
+        if (! ent.getLikedByUsers().remove(liker))
+            ent.getLikedByUsers().add(liker);
+
+        return this.toLikeSummaryResponse(postRepository.save(ent), liker);
+    }
+
+    @Override
+    public PostLikeSummaryResponse getLikePost(Long postId, Authentication authentication) {
+        UserEntity liker = this.usersRepository.findByUsername(authentication.getName())
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Current user not found"));
+
+        PostEntity ent = this.postRepository.findById(postId)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Post not found"));
+
+        return this.toLikeSummaryResponse(ent, liker);
+    }
+
+    @Override
+    public PostCommentSummaryResponse postCommentPost(
+            Long postId, PostCommentRequest req, Authentication authentication) {
+        UserEntity loggedInUser = this.usersRepository.findByUsername(authentication.getName())
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Current user not found"));
+
+        PostEntity post = this.postRepository.findById(postId)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Post not found"));
+
+        PostCommentEntity ent = new PostCommentEntity(
+                req.getText(),
+                loggedInUser,
+                post
+        );
+
+        return this.toCommentSummaryResponse(this.postCommentsRepository.save(ent), loggedInUser);
+    }
+
+    @Override
+    public List<PostCommentSummaryResponse> getCommentsPost(Long postId, Authentication authentication) {
+        UserEntity loggedInUser = this.usersRepository.findByUsername(authentication.getName())
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Current user not found"));
+
+        PostEntity ent = this.postRepository.findById(postId)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Post not found"));
+
+        return ent.getPostComments().stream()
+                .map(x -> this.toCommentSummaryResponse(x, loggedInUser)).toList();
+    }
+
+    @Override
+    public PostCommentSummaryResponse toggleLikeCommentPost(
+            Long postId, Long commentId, Authentication authentication) {
+        UserEntity loggedInUser = this.usersRepository.findByUsername(authentication.getName())
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Current user not found"));
+
+        PostEntity ent = this.postRepository.findById(postId)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Post not found"));
+
+        if (ent.getPostComments().stream().noneMatch(x -> x.getId().equals(commentId)))
+            throw new ResponseStatusException(NOT_FOUND, "Comment not found");
+
+        PostCommentEntity comment = this.postCommentsRepository.findById(commentId)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Post not found"));
+
+        if (! comment.getLikedByUsers().contains(loggedInUser))
+            comment.getLikedByUsers().add(loggedInUser);
+
+        return this.toCommentSummaryResponse(this.postCommentsRepository.save(comment), loggedInUser);
+    }
+
     private PostSummaryResponse toSummaryResponse(PostEntity post) {
         return new PostSummaryResponse(
                 post.getId(),
@@ -85,6 +170,26 @@ public class PostsServiceImpl implements PostsService {
                 post.getCreator() == null ? null : post.getCreator().getUsername(),
                 post.getCreatedAt(),
                 post.getLikedByUsers() == null ? 0L : post.getLikedByUsers().size()
+        );
+    }
+
+    private PostLikeSummaryResponse toLikeSummaryResponse(PostEntity post, UserEntity liker) {
+        return new PostLikeSummaryResponse(
+                post.getId(),
+                post.getLikedByUsers() == null ? 0L : post.getLikedByUsers().size(),
+                post.getLikedByUsers().contains(liker)
+        );
+    }
+
+    private PostCommentSummaryResponse toCommentSummaryResponse(PostCommentEntity comment, UserEntity user) {
+        return new PostCommentSummaryResponse(
+                comment.getId(),
+                comment.getText(),
+                comment.getCreator() == null ? null : comment.getCreator().getUsername(),
+                comment.getCreatedAt(),
+                comment.getUpdatedAt(),
+                comment.getLikedByUsers() == null ? 0L : comment.getLikedByUsers().size(),
+                comment.getLikedByUsers().contains(user)
         );
     }
 }

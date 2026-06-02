@@ -1,7 +1,10 @@
 package com.petgram.petgrambackend.controller;
 
+import com.petgram.petgrambackend.dto.PostCommentRequest;
 import com.petgram.petgrambackend.dto.PostCreateRequest;
 import com.petgram.petgrambackend.service.PostsService;
+import com.petgram.petgrambackend.view.PostCommentSummaryResponse;
+import com.petgram.petgrambackend.view.PostLikeSummaryResponse;
 import com.petgram.petgrambackend.view.PostSummaryResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -51,5 +54,47 @@ public class PostsController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Forbidden");
         }
         return postsService.postPost(req, authentication);
+    }
+
+    @PostMapping("/{id}/like")
+    public PostLikeSummaryResponse toggleLikePost(@PathVariable("id") Long id, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Forbidden");
+        }
+        return postsService.toggleLikePost(id, authentication);
+    }
+
+    @GetMapping("/{id}/like")
+    public PostLikeSummaryResponse getLikePost(@PathVariable("id") Long id, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Forbidden");
+        }
+        return postsService.getLikePost(id, authentication);
+    }
+
+    @PostMapping("/{id}/comment")
+    public PostCommentSummaryResponse postCommentsPost(
+            @PathVariable("id") Long id, @Valid @RequestBody PostCommentRequest req, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Forbidden");
+        }
+        return postsService.postCommentPost(id, req, authentication);
+    }
+
+    @GetMapping("/{id}/comment")
+    public List<PostCommentSummaryResponse> getCommentsPost(@PathVariable("id") Long id, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Forbidden");
+        }
+        return postsService.getCommentsPost(id, authentication);
+    }
+
+    @PostMapping("/{id}/comment/{commId}/like")
+    public PostCommentSummaryResponse toggleLikeCommentPost(
+            @PathVariable("id") Long postId, @PathVariable("commId") Long commentId, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Forbidden");
+        }
+        return postsService.toggleLikeCommentPost(postId, commentId, authentication);
     }
 }
