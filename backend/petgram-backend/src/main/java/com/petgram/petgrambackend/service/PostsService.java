@@ -3,6 +3,7 @@ package com.petgram.petgrambackend.service;
 import com.petgram.petgrambackend.dto.PostCommentRequest;
 import com.petgram.petgrambackend.dto.PostCreateRequest;
 import com.petgram.petgrambackend.view.PostCommentSummaryResponse;
+import com.petgram.petgrambackend.view.PostFeedResponse;
 import com.petgram.petgrambackend.view.PostLikeSummaryResponse;
 import com.petgram.petgrambackend.view.PostSummaryResponse;
 import org.springframework.security.core.Authentication;
@@ -27,4 +28,6 @@ public interface PostsService {
     List<PostCommentSummaryResponse> getCommentsPost(Long postId, Authentication authentication);
 
     PostCommentSummaryResponse toggleLikeCommentPost(Long postId, Long commentId, Authentication authentication);
+
+    PostFeedResponse getFeed(Long cursor, int limit, Authentication authentication);
 }

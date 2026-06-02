@@ -4,6 +4,7 @@ import com.petgram.petgrambackend.dto.PostCommentRequest;
 import com.petgram.petgrambackend.dto.PostCreateRequest;
 import com.petgram.petgrambackend.service.PostsService;
 import com.petgram.petgrambackend.view.PostCommentSummaryResponse;
+import com.petgram.petgrambackend.view.PostFeedResponse;
 import com.petgram.petgrambackend.view.PostLikeSummaryResponse;
 import com.petgram.petgrambackend.view.PostSummaryResponse;
 import jakarta.validation.Valid;
@@ -96,5 +97,16 @@ public class PostsController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Forbidden");
         }
         return postsService.toggleLikeCommentPost(postId, commentId, authentication);
+    }
+
+    @GetMapping("/feed")
+    public PostFeedResponse getFeed(
+            @RequestParam(required = false) Long cursor,
+            @RequestParam(defaultValue = "10") int limit,
+            Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Forbidden");
+        }
+        return postsService.getFeed(cursor, limit, authentication);
     }
 }

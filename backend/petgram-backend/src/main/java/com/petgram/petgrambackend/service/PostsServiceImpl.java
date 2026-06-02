@@ -10,14 +10,18 @@ import com.petgram.petgrambackend.repository.PostCommentsRepository;
 import com.petgram.petgrambackend.repository.PostRepository;
 import com.petgram.petgrambackend.repository.UsersRepository;
 import com.petgram.petgrambackend.view.PostCommentSummaryResponse;
+import com.petgram.petgrambackend.view.PostFeedResponse;
 import com.petgram.petgrambackend.view.PostLikeSummaryResponse;
 import com.petgram.petgrambackend.view.PostSummaryResponse;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -160,6 +164,35 @@ public class PostsServiceImpl implements PostsService {
             comment.getLikedByUsers().add(loggedInUser);
 
         return this.toCommentSummaryResponse(this.postCommentsRepository.save(comment), loggedInUser);
+    }
+
+    @Override
+    public PostFeedResponse getFeed(Long cursor, int limit, Authentication authentication) {
+        UserEntity currentUser = usersRepository.findByUsername(authentication.getName())
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Current user not found"));
+
+        Set<UserEntity> feedUsers = new HashSet<>(currentUser.getFollowing());
+        feedUsers.add(currentUser);
+        Set<PetEntity> feedPets = new HashSet<>(currentUser.getFollowedPets());
+
+        Long effectiveCursor = cursor != null ? cursor : Long.MAX_VALUE;
+
+        Pageable pageable = org.springframework.data.domain.PageRequest.of(0, limit + 1);
+        List<PostEntity> feedPosts = postRepository.findFeedPostsCursor(feedUsers, feedPets, effectiveCursor, pageable);
+
+        boolean hasNext = feedPosts.size() > limit;
+        if (hasNext)
+            feedPosts = feedPosts.subList(0, limit);
+
+        List<PostSummaryResponse> postResponses = feedPosts.stream()
+                .map(this::toSummaryResponse)
+                .toList();
+
+        Long nextCursor = null;
+        if (hasNext && !postResponses.isEmpty())
+            nextCursor = postResponses.get(postResponses.size() - 1).id();
+
+        return new PostFeedResponse(postResponses, nextCursor);
     }
 
     private PostSummaryResponse toSummaryResponse(PostEntity post) {
