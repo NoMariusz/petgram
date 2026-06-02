@@ -4,11 +4,10 @@ import { apiRequest } from '~/data/api';
 import type { PostListItem } from "~/data/types";
 import SecureImage from '~/components/shared/SecureImage';
 
-// Interfaces mapping 1:1 to your backend Java Records
 interface PostLikeSummaryResponse {
 	id: number;
 	likesCount: number;
-	likedByAuthenticatedUser: boolean; // Maps to boolean isLikedByAuthenticatedUser
+	likedByAuthenticatedUser: boolean;
 }
 
 interface PostCommentSummaryResponse {
@@ -25,7 +24,6 @@ export default function Post() {
 	const params = useParams();
 	const id = params.id;
 
-	// Decoupled states to match your backend endpoints structure
 	const [post, setPost] = useState<PostListItem | null>(null);
 	const [likeData, setLikeData] = useState<PostLikeSummaryResponse | null>(null);
 	const [comments, setComments] = useState<PostCommentSummaryResponse[]>([]);
@@ -45,7 +43,6 @@ export default function Post() {
 		setIsLoading(true);
 		setError(null);
 
-		// Multi-resource parallel fetch orchestration
 		Promise.all([
 			apiRequest(`/posts/${id}`).then((res) => {
 				if (!res.ok) throw new Error(`Post not found (${res.status})`);
@@ -74,14 +71,12 @@ export default function Post() {
 			});
 	}, [id]);
 
-	// Snaapy Optimistic Like Toggle with automatic server sync rollback
 	const handleLikeToggle = async () => {
 		if (!id || !likeData) return;
 
 		const previouslyLiked = likeData.likedByAuthenticatedUser || (likeData as any).isLikedByAuthenticatedUser;
 		const previousCount = Number(likeData.likesCount || 0);
 
-		// Step 1: UI immediate update (snappy feedback)
 		setLikeData({
 			id: Number(id),
 			likesCount: previousCount + (previouslyLiked ? -1 : 1),
@@ -89,13 +84,11 @@ export default function Post() {
 		} as any);
 
 		try {
-			// Step 2: Post to backend
 			const response = await apiRequest(`/posts/${id}/like`, 'POST');
 			if (response.ok) {
 				const freshLikeData = await response.json() as PostLikeSummaryResponse;
 				setLikeData(freshLikeData);
 			} else {
-				// Rollback if server rejects
 				throw new Error('Server returned error status');
 			}
 		} catch (err) {
@@ -108,7 +101,6 @@ export default function Post() {
 		}
 	};
 
-	// Comment Submission Handler targeting POST /posts/{id}/comment
 	const handleCommentSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (!newComment.trim() || !id) return;
@@ -154,10 +146,8 @@ export default function Post() {
 	const authorDisplayName = (post as any).authorDisplayName || (post as any).author?.displayName || `@${authorUsername}`;
 	const authorId = (post as any).authorId || (post as any).author?.id || null;
 
-	// Defensive check for tagged pets structures
 	const taggedPetsRaw = (post as any).taggedPets || (post as any).pets || [];
 
-	// Normalizing backend boolean flags dynamically
 	const isLikedByMe = likeData
 		? (likeData.likedByAuthenticatedUser || (likeData as any).isLikedByAuthenticatedUser)
 		: false;
@@ -166,7 +156,6 @@ export default function Post() {
 		<div className='mx-auto max-w-3xl px-4 py-8 lg:px-0'>
 			<article className='overflow-hidden rounded-[24px] bg-[#FFFEFB] shadow-[0_12px_32px_rgba(48,51,48,0.06)] border border-[#F4F4F0]'>
 
-				{/* HEADER: Author block linked to profile */}
 				<div className='flex items-center justify-between border-b border-[#F4F4F0] p-5'>
 					<Link
 						to={authorId ? `/users/${authorId}` : '/users/profile'}
@@ -194,7 +183,6 @@ export default function Post() {
 					</Link>
 				</div>
 
-				{/* CONTENT: Picture Display Area */}
 				{post.postPictureUrl && (
 					<div className='bg-[#E7E9E4] max-h-[520px] w-full overflow-hidden flex items-center justify-center border-b border-[#F4F4F0]'>
 						<SecureImage
@@ -206,12 +194,10 @@ export default function Post() {
 				)}
 
 				<div className='p-6 space-y-6'>
-					{/* Main Description Text */}
 					<p className='text-base text-[#303330] leading-relaxed whitespace-pre-wrap font-medium'>
 						{post.text || 'Untitled Memory'}
 					</p>
 
-					{/* TAGGED PETS SECTION */}
 					{taggedPetsRaw.length > 0 && (
 						<div className='flex flex-wrap items-center gap-2 border-t border-b border-[#F4F4F0] py-3.5'>
 							<span className='text-xs font-bold text-[#5D605C] uppercase tracking-wider mr-1'>
@@ -241,7 +227,6 @@ export default function Post() {
 						</div>
 					)}
 
-					{/* INTERACTIONS BAR: Real-time like counter toggle */}
 					<div className='flex items-center gap-6 pt-1'>
 						<button
 							type='button'
@@ -265,13 +250,11 @@ export default function Post() {
 						</button>
 					</div>
 
-					{/* COMMENTS ARCHITECTURE SECTION */}
 					<div className='border-t border-[#F4F4F0] pt-6 space-y-4'>
 						<h4 className='text-sm font-bold text-[#303330] tracking-wide'>
 							Comments ({comments.length})
 						</h4>
 
-						{/* Scrollable comments stream item template list */}
 						<div className='space-y-3 max-h-[320px] overflow-y-auto pr-1 custom-scrollbar'>
 							{comments.length === 0 ? (
 								<p className='text-sm italic text-[#5D605C] py-2'>
@@ -299,7 +282,6 @@ export default function Post() {
 							)}
 						</div>
 
-						{/* Elegant round text input box for adding a comment */}
 						<form onSubmit={handleCommentSubmit} className='mt-4 flex gap-2 pt-2'>
 							<input
 								type='text'

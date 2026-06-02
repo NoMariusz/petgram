@@ -2,9 +2,9 @@ package com.petgram.petgrambackend.service;
 
 import com.petgram.petgrambackend.dto.PetCreateRequest;
 import com.petgram.petgrambackend.dto.PetUpdateRequest;
+import com.petgram.petgrambackend.view.FollowResponse;
 import com.petgram.petgrambackend.view.PetCreateResponse;
 import com.petgram.petgrambackend.view.PetProfileResponse;
-import com.petgram.petgrambackend.view.FollowResponse;
 import org.springframework.security.core.Authentication;
 
 public interface PetsService {
