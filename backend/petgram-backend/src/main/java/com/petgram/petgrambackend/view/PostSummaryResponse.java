@@ -10,6 +10,7 @@ public record PostSummaryResponse(
         String creatorName,
         LocalDateTime createdAt,
         long likesCount,
+        long commentsCount,
         List<String> pets
 ) {
 }

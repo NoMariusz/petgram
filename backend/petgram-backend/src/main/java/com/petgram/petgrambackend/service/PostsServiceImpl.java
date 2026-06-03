@@ -203,6 +203,7 @@ public class PostsServiceImpl implements PostsService {
                 post.getCreator() == null ? null : post.getCreator().getUsername(),
                 post.getCreatedAt(),
                 post.getLikedByUsers() == null ? 0L : post.getLikedByUsers().size(),
+                post.getPostComments() == null ? 0L : post.getPostComments().size(),
                 post.getPets().stream().map(PetEntity::getName).toList()
         );
     }

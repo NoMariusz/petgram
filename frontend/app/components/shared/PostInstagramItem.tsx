@@ -24,6 +24,8 @@ export default function PostInstagramItem({ id, data }: PostInstagramItemProps) 
 	const authorUsername = (data as any).creatorName || 'user';
 	const [authorId, setAuthorId] = useState<number | null>(null);
 
+    const commentsCount = (data as any).commentsCount || 0;
+
 	const [isLiked, setIsLiked] = useState<boolean>((data as any).isLikedByAuthenticatedUser);
 	const [likesCount, setLikesCount] = useState<number>((data as any).likesCount || 0);
 	const [isSubmittingLike, setIsSubmittingLike] = useState(false);
@@ -172,7 +174,12 @@ export default function PostInstagramItem({ id, data }: PostInstagramItemProps) 
 							<path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z' />
 						</svg>
 					</button>
-					<Link to={`/posts/${data.id}`} aria-label='Comment on memory' className='hover:text-[#7D5739] hover:scale-110 transition-all block'>
+
+					<Link
+						to={`/posts/${data.id}`}
+						aria-label='Comment on memory'
+						className='hover:text-[#7D5739] hover:scale-105 transition-all flex items-center gap-1 text-sm font-medium text-[#303330]'
+					>
 						<svg className='w-6 h-6' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
 							<path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z' />
 						</svg>
@@ -180,7 +187,8 @@ export default function PostInstagramItem({ id, data }: PostInstagramItemProps) 
 				</div>
 
 				<div className='text-sm font-bold text-[#303330] tracking-tight'>
-					{likesCount} {likesCount === 1 ? 'like' : 'likes'}
+					{likesCount} {likesCount === 1 ? 'like' : 'likes'},&nbsp;
+                    {commentsCount} {commentsCount === 1 ? 'comment' : 'comments'}
 				</div>
 			</div>
 		</article>

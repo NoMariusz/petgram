@@ -59,13 +59,6 @@ export default function Feed() {
 	return (
 		<LoggedContainer activeItem='feed'>
 			<div className='max-w-[480px] mx-auto space-y-6 pt-4 animate-fadeIn'>
-
-				<header className='rounded-[24px] bg-[#FFFEFB] p-5 shadow-[0_8px_24px_rgba(48,51,48,0.04)] border border-[#F4F4F0] text-center'>
-					<h1 className='text-lg font-black text-[#303330] tracking-tight flex items-center justify-center gap-1.5'>
-						<span>🐾</span> Petgram Feed
-					</h1>
-				</header>
-
 				<main className='pb-12'>
 					{isLoadingInitial ? (
 						[1, 2].map((sk) => (
