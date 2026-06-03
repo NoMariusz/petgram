@@ -20,11 +20,31 @@ interface PostLikeSummaryResponse {
 	isLikedByAuthenticatedUser: boolean;
 }
 
+export const formatCreationDate = (createdAtString: string): string => {
+	if (!createdAtString) return '';
+	const createdDate = new Date(createdAtString);
+	const now = new Date();
+	const diffInMs = now.getTime() - createdDate.getTime();
+	const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
+
+	if (diffInHours >= 0 && diffInHours < 24) {
+		const hours = diffInHours === 0 ? 1 : diffInHours;
+		return `${hours} hour${hours === 1 ? '' : 's'} ago`;
+	} else {
+		const day = String(createdDate.getDate()).padStart(2, '0');
+		const month = String(createdDate.getMonth() + 1).padStart(2, '0');
+		const year = createdDate.getFullYear();
+		const hours = String(createdDate.getHours()).padStart(2, '0');
+		const minutes = String(createdDate.getMinutes()).padStart(2, '0');
+		return `${day}.${month}.${year} ${hours}:${minutes}`;
+	}
+};
+
 export default function PostInstagramItem({ id, data }: PostInstagramItemProps) {
 	const authorUsername = (data as any).creatorName || 'user';
 	const [authorId, setAuthorId] = useState<number | null>(null);
 
-    const commentsCount = (data as any).commentsCount || 0;
+	const commentsCount = (data as any).commentsCount || 0;
 
 	const [isLiked, setIsLiked] = useState<boolean>((data as any).isLikedByAuthenticatedUser);
 	const [likesCount, setLikesCount] = useState<number>((data as any).likesCount || 0);
@@ -62,10 +82,6 @@ export default function PostInstagramItem({ id, data }: PostInstagramItemProps) 
 
 	const authorProfileLink = authorId ? `/users/profile/${authorId}` : '#';
 
-	const formattedDate = data.createdAt
-		? new Date(data.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
-		: '';
-
 	const handleLikeToggle = async () => {
 		if (isSubmittingLike) return;
 		setIsSubmittingLike(true);
@@ -97,6 +113,7 @@ export default function PostInstagramItem({ id, data }: PostInstagramItemProps) 
 	return (
 		<article className='w-full max-w-[480px] mx-auto overflow-hidden rounded-[24px] bg-[#FFFEFB] border border-[#F4F4F0] shadow-[0_8px_24px_rgba(48,51,48,0.04)] mb-8'>
 
+			{/* Header with Top-Right Creation Date */}
 			<div className='flex items-center justify-between p-4'>
 				<div className='flex items-center gap-3'>
 					<Link
@@ -113,9 +130,13 @@ export default function PostInstagramItem({ id, data }: PostInstagramItemProps) 
 						>
 							{authorUsername}
 						</Link>
-						<span className='text-[11px] font-medium text-[#5D605C]/70'>{formattedDate}</span>
 					</div>
 				</div>
+
+				{/* Creation Timestamp element */}
+				<span className='text-xs font-medium text-[#5D605C]/70 select-none self-start pt-1'>
+					{formatCreationDate(data.createdAt)}
+				</span>
 			</div>
 
 			{data.postPictureUrl && (

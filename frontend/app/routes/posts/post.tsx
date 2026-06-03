@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router';
 import { apiRequest } from '~/data/api';
 import SecureImage from '~/components/shared/SecureImage';
+import { formatCreationDate } from "~/components/shared/PostInstagramItem"
 
 interface PostSummaryResponse {
 	id: number;
@@ -220,6 +221,10 @@ export default function Post() {
 							</p>
 						</div>
 					</Link>
+
+					<span className='text-xs font-medium text-[#5D605C]/70 select-none self-start pt-1'>
+						{formatCreationDate(post.createdAt)}
+					</span>
 				</div>
 
 				{post.postPictureUrl && (
