@@ -206,7 +206,7 @@ export default function Post() {
 
 				<div className='flex items-center justify-between border-b border-[#F4F4F0] p-5'>
 					<Link
-						to={authorId ? `/users/${authorId}` : '/users/profile'}
+						to={authorId ? `/users/profile/${authorId}` : '/users/profile'}
 						className='flex items-center gap-3 group'
 					>
 						<div className='h-11 w-11 overflow-hidden rounded-full bg-[#E7E9E4] flex items-center justify-center font-bold text-[#7D5739] text-sm uppercase'>
