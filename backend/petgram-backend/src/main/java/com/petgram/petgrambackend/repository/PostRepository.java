@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -34,4 +35,22 @@ public interface PostRepository extends JpaRepository<PostEntity, Long> {
 			@Param("cursor") Long cursor,
 			Pageable pageable
 	);
-}
+
+	@Query("SELECT p FROM PostEntity p " +
+			"WHERE LOWER(p.text) LIKE LOWER(CONCAT('%', :query, '%')) " +
+			"ORDER BY p.createdAt DESC")
+	List<PostEntity> searchBasic(@Param("query") String query);
+
+	@Query("SELECT DISTINCT p FROM PostEntity p " +
+			"LEFT JOIN p.pets pet " +
+			"WHERE LOWER(p.text) LIKE LOWER(CONCAT('%', :query, '%')) " +
+			"  AND (:authorHandle IS NULL OR LOWER(p.creator.username) LIKE LOWER(CONCAT('%', :authorHandle, '%'))) " +
+			"  AND (:taggedPet IS NULL OR LOWER(pet.name) LIKE LOWER(CONCAT('%', :taggedPet, '%'))) " +
+			"  AND (:creationDate IS NULL OR CAST(p.createdAt AS localdate) = :creationDate) " +
+			"ORDER BY p.createdAt DESC")
+	List<PostEntity> searchAdvanced(
+			@Param("query") String query,
+			@Param("authorHandle") String authorHandle,
+			@Param("taggedPet") String taggedPet,
+			@Param("creationDate") LocalDate creationDate
+	);}

@@ -2,6 +2,8 @@ package com.petgram.petgrambackend.controller;
 
 import com.petgram.petgrambackend.dto.PostCommentRequest;
 import com.petgram.petgrambackend.dto.PostCreateRequest;
+import com.petgram.petgrambackend.dto.PostSearchRequest;
+import com.petgram.petgrambackend.dto.WithAdvancedFiltersPostSearchRequest;
 import com.petgram.petgrambackend.service.PostsService;
 import com.petgram.petgrambackend.view.PostCommentSummaryResponse;
 import com.petgram.petgrambackend.view.PostFeedResponse;
@@ -108,5 +110,23 @@ public class PostsController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Forbidden");
         }
         return postsService.getFeed(cursor, limit, authentication);
+    }
+
+    @PostMapping("/search")
+    public PostFeedResponse searchPosts(@Valid @RequestBody PostSearchRequest req, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Forbidden");
+        }
+        return postsService.searchPosts(req, authentication);
+    }
+
+    @PostMapping("/search/advanced")
+    public PostFeedResponse searchPostsAdvanced(
+            @Valid @RequestBody WithAdvancedFiltersPostSearchRequest req,
+            Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Forbidden");
+        }
+        return postsService.searchPostsAdvanced(req, authentication);
     }
 }

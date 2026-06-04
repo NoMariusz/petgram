@@ -2,6 +2,8 @@ package com.petgram.petgrambackend.service;
 
 import com.petgram.petgrambackend.dto.PostCommentRequest;
 import com.petgram.petgrambackend.dto.PostCreateRequest;
+import com.petgram.petgrambackend.dto.PostSearchRequest;
+import com.petgram.petgrambackend.dto.WithAdvancedFiltersPostSearchRequest;
 import com.petgram.petgrambackend.view.PostCommentSummaryResponse;
 import com.petgram.petgrambackend.view.PostFeedResponse;
 import com.petgram.petgrambackend.view.PostLikeSummaryResponse;
@@ -30,4 +32,8 @@ public interface PostsService {
     PostCommentSummaryResponse toggleLikeCommentPost(Long postId, Long commentId, Authentication authentication);
 
     PostFeedResponse getFeed(Long cursor, int limit, Authentication authentication);
+
+    PostFeedResponse searchPosts(PostSearchRequest req, Authentication authentication);
+
+    PostFeedResponse searchPostsAdvanced(WithAdvancedFiltersPostSearchRequest req, Authentication authentication);
 }

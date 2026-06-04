@@ -2,6 +2,8 @@ package com.petgram.petgrambackend.service;
 
 import com.petgram.petgrambackend.dto.PostCommentRequest;
 import com.petgram.petgrambackend.dto.PostCreateRequest;
+import com.petgram.petgrambackend.dto.PostSearchRequest;
+import com.petgram.petgrambackend.dto.WithAdvancedFiltersPostSearchRequest;
 import com.petgram.petgrambackend.entity.PetEntity;
 import com.petgram.petgrambackend.entity.PostCommentEntity;
 import com.petgram.petgrambackend.entity.PostEntity;
@@ -193,6 +195,25 @@ public class PostsServiceImpl implements PostsService {
             nextCursor = postResponses.get(postResponses.size() - 1).id();
 
         return new PostFeedResponse(postResponses, nextCursor);
+    }
+
+    @Override
+    public PostFeedResponse searchPosts(PostSearchRequest req, Authentication authentication) {
+        List<PostSummaryResponse> matches = this.postRepository.searchBasic(req.getQuery())
+                .stream()
+                .map(this::toSummaryResponse).toList();
+
+        return new PostFeedResponse(matches, 0L);
+    }
+
+    @Override
+    public PostFeedResponse searchPostsAdvanced(WithAdvancedFiltersPostSearchRequest req, Authentication authentication) {
+        List<PostSummaryResponse> matches = this.postRepository
+                .searchAdvanced(req.getQuery(), req.getAuthorHandle(), req.getTaggedPet(), req.getCreationDate())
+                .stream()
+                .map(this::toSummaryResponse).toList();
+
+        return new PostFeedResponse(matches, 0L);
     }
 
     private PostSummaryResponse toSummaryResponse(PostEntity post) {
