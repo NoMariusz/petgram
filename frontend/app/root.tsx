@@ -6,9 +6,11 @@ import {
 	Scripts,
 	ScrollRestoration,
 } from 'react-router';
+import { useEffect } from 'react';
 
 import type { Route } from './+types/root';
 import './app.css';
+import { initHotjar } from './data/hotjar';
 
 export const links: Route.LinksFunction = () => [
 	{ rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -45,6 +47,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+	useEffect(() => {
+		initHotjar();
+	}, []);
+
 	return <Outlet />;
 }
 
