@@ -207,7 +207,7 @@ export default function PostInstagramItem({ id, data }: PostInstagramItemProps) 
 					</Link>
 				</div>
 
-				<div className='text-sm font-bold text-[#303330] tracking-tight'>
+				<div className='text-sm font-normal text-[#303330] tracking-tight'>
 					{likesCount} {likesCount === 1 ? 'like' : 'likes'},&nbsp;
                     {commentsCount} {commentsCount === 1 ? 'comment' : 'comments'}
 				</div>
