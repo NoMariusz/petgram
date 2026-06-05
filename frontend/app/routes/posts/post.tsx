@@ -335,7 +335,7 @@ export default function Post() {
 
 							<form
 								onSubmit={handleCommentSubmit}
-								className='mt-4 flex gap-2 pt-2'
+								className='mt-4 flex gap-2 pt-2 flex-wrap'
 							>
 								<input
 									type='text'

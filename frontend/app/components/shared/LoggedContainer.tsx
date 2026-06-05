@@ -64,7 +64,7 @@ export default function LoggedContainer({
 	return (
 		<main className='min-h-screen bg-[#FAF9F6] px-6 pb-24'>
 			<header className='sticky top-0 z-20 bg-[#FAF9F6] relative flex justify-center pt-6 pb-10'>
-				<div className='absolute top-8 right-2 md:right-8'>
+				<div className='absolute top-0 right-0 sm:top-8 sm:right-2 md:right-8 z-index-30'>
 					<div className='relative'>
 						<button
 							type='button'
