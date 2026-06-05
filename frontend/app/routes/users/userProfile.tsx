@@ -12,6 +12,7 @@ import type { UserProfileResponse } from '~/data/types';
 import SecureImage from '~/components/shared/SecureImage';
 import { DEFAULT_USER_ROLE } from '~/data/constants';
 import SimpleAccentButton from '~/components/shared/SimpleAccentButton';
+import { formatCount } from '~/utils/formatters';
 
 export default function UserProfile() {
 	const params = useParams();
@@ -80,14 +81,6 @@ export default function UserProfile() {
 
 	const handleSharePinnedPost = () => {
 		console.log('Share pinned post clicked');
-	};
-
-	const formatCount = (value: number) => {
-		if (value >= 1000) {
-			const formatted = (value / 1000).toFixed(1).replace('.0', '');
-			return `${formatted}k`;
-		}
-		return value.toString();
 	};
 
 	const roleLabel = userProfile?.role ?? DEFAULT_USER_ROLE;
