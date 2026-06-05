@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import { apiRequest } from '~/data/api';
-import type { PostListItem } from '~/data/types';
+import type { PostListItem, UserProfilePetResponse } from '~/data/types';
 import SecureImage from '~/components/shared/SecureImage';
 
 interface PostInstagramItemProps {
@@ -12,6 +12,10 @@ interface PostInstagramItemProps {
 interface UserDataResponse {
 	id: number;
 	username: string;
+}
+
+interface UserProfilePetsResponse {
+	pets: UserProfilePetResponse[];
 }
 
 interface PostLikeSummaryResponse {
@@ -43,8 +47,10 @@ export const formatCreationDate = (createdAtString: string): string => {
 export default function PostInstagramItem({ id, data }: PostInstagramItemProps) {
 	const authorUsername = (data as any).creatorName || 'user';
 	const [authorId, setAuthorId] = useState<number | null>(null);
+	const [authorPets, setAuthorPets] = useState<UserProfilePetResponse[]>([]);
 
 	const commentsCount = (data as any).commentsCount || 0;
+	const taggedPets = ((data as any).pets || []) as string[];
 
 	const [isLiked, setIsLiked] = useState<boolean>((data as any).isLikedByAuthenticatedUser);
 	const [likesCount, setLikesCount] = useState<number>((data as any).likesCount || 0);
@@ -80,7 +86,32 @@ export default function PostInstagramItem({ id, data }: PostInstagramItemProps) 
 			.catch((err) => console.error(`Failed to resolve ID for user ${authorUsername}:`, err));
 	}, [authorUsername]);
 
+	useEffect(() => {
+		if (!authorId || taggedPets.length === 0) {
+			setAuthorPets([]);
+			return;
+		}
+
+		apiRequest(`/users/${authorId}/profile`, 'GET')
+			.then(async (res) => {
+				if (res.ok) {
+					const userData = (await res.json()) as UserProfilePetsResponse;
+					setAuthorPets(userData.pets || []);
+				}
+			})
+			.catch((err) => console.error(`Failed to fetch pets for user ${authorId}:`, err));
+	}, [authorId, taggedPets.length]);
+
 	const authorProfileLink = authorId ? `/users/profile/${authorId}` : '#';
+	const getPetProfileLink = (petName: string) => {
+		const pet = authorPets.find((item) => item.name === petName);
+		return pet ? `/pets/profile/${pet.id}` : null;
+	};
+	const primaryPetName = taggedPets[0] || null;
+	const primaryPet = primaryPetName
+		? authorPets.find((item) => item.name === primaryPetName)
+		: null;
+	const primaryPetProfileLink = primaryPetName ? getPetProfileLink(primaryPetName) : null;
 
 	const handleLikeToggle = async () => {
 		if (isSubmittingLike) return;
@@ -116,25 +147,56 @@ export default function PostInstagramItem({ id, data }: PostInstagramItemProps) 
 			{/* Header with Top-Right Creation Date */}
 			<div className='flex items-center justify-between p-4'>
 				<div className='flex items-center gap-3'>
-					<Link
-						to={authorProfileLink}
-						className={`h-9 w-9 flex items-center justify-center rounded-full bg-[#FECAA5] text-[#644126] font-bold text-sm tracking-wider uppercase transition-transform hover:scale-105 shadow-inner ${!authorId ? 'pointer-events-none opacity-70' : ''}`}
-					>
-						{authorUsername.substring(0, 2)}
-					</Link>
-
-					<div className='flex flex-col'>
+					{primaryPetProfileLink ? (
+						<Link
+							to={primaryPetProfileLink}
+							className='h-10 w-10 flex items-center justify-center overflow-hidden rounded-full bg-[#FECAA5] text-[#644126] font-bold text-sm tracking-wider uppercase transition-transform hover:scale-105 shadow-inner'
+						>
+							{primaryPet?.profilePictureUrl ? (
+								<SecureImage
+									src={primaryPet.profilePictureUrl}
+									alt={primaryPet.name}
+									className='h-full w-full object-cover'
+								/>
+							) : (
+								primaryPetName?.substring(0, 2)
+							)}
+						</Link>
+					) : (
 						<Link
 							to={authorProfileLink}
-							className={`text-sm font-bold text-[#303330] hover:text-[#7D5739] transition-colors ${!authorId ? 'pointer-events-none' : ''}`}
+							className={`h-10 w-10 flex items-center justify-center rounded-full bg-[#FECAA5] text-[#644126] font-bold text-sm tracking-wider uppercase transition-transform hover:scale-105 shadow-inner ${!authorId ? 'pointer-events-none opacity-70' : ''}`}
 						>
-							{authorUsername}
+							{(primaryPetName || authorUsername).substring(0, 2)}
 						</Link>
+					)}
+
+					<div className='flex flex-wrap items-center gap-x-2 gap-y-1'>
+						{primaryPetProfileLink ? (
+							<Link
+								to={primaryPetProfileLink}
+								className='text-base font-bold text-[#303330] hover:text-[#7D5739] transition-colors'
+							>
+								{primaryPetName}
+							</Link>
+						) : (
+							<span className='text-base font-bold text-[#303330]'>
+								{primaryPetName || authorUsername}
+							</span>
+						)}
+						{primaryPetName && (
+							<Link
+								to={authorProfileLink}
+								className={`text-base font-normal text-[#5D605C] hover:text-[#7D5739] transition-colors ${!authorId ? 'pointer-events-none' : ''}`}
+							>
+								@{authorUsername}
+							</Link>
+						)}
 					</div>
 				</div>
 
 				{/* Creation Timestamp element */}
-				<span className='text-xs font-medium text-[#5D605C]/70 select-none self-start pt-1'>
+				<span className='text-sm font-medium text-[#5D605C]/70 select-none'>
 					{formatCreationDate(data.createdAt)}
 				</span>
 			</div>
@@ -155,28 +217,34 @@ export default function PostInstagramItem({ id, data }: PostInstagramItemProps) 
 				!data.postPictureUrl ? (
 					<Link
 						to={`/posts/${data.id}`}
-						className='block px-4 pt-3 pb-2 text-sm leading-relaxed text-[#303330] break-words font-medium whitespace-pre-wrap hover:bg-[#FAF9F6]/40 transition-colors'
+						className='block px-4 pt-4 pb-2 text-base leading-relaxed text-[#303330] break-words font-medium whitespace-pre-wrap hover:bg-[#FAF9F6]/40 transition-colors'
 					>
 						{data.text}
 					</Link>
 				) : (
-					<div className='px-4 pt-3 text-sm leading-relaxed text-[#303330] break-words font-medium whitespace-pre-wrap'>
+					<div className='px-4 pt-4 text-base leading-relaxed text-[#303330] break-words font-medium whitespace-pre-wrap'>
 						{data.text}
 					</div>
 				)
 			)}
 
 			<div className='p-4 pt-2 space-y-3'>
-                {(data as any).pets && (data as any).pets.length > 0 && (
-                    <div className='flex flex-wrap gap-1.5 pt-1'>
-                        {((data as any).pets as string[]).map((pet, idx) => (
-                            <span
-                                key={idx}
-                                className='text-[11px] font-bold text-[#7D5739] bg-[#FFF7F4] border border-[#FECAA5]/40 px-2 py-0.5 rounded-full shadow-sm'
-                            >
-                                🐾 {pet}
-                            </span>
-                        ))}
+                {taggedPets.length > 1 && (
+                    <div className='flex flex-wrap gap-2 pt-1'>
+                        {taggedPets.slice(1).map((pet, idx) => {
+							const petProfileLink = getPetProfileLink(pet);
+                            const className = 'rounded-full border border-[#D5D7D3] bg-[#F4F4F0] px-3 py-1 text-sm font-semibold text-[#644126] transition-colors hover:border-[#C7B8AA] hover:bg-[#FFFEFB]';
+
+                            return petProfileLink ? (
+                                <Link key={pet} to={petProfileLink} className={className}>
+                                    {pet}
+                                </Link>
+                            ) : (
+                                <span key={`${pet}-${idx}`} className={className}>
+                                    {pet}
+                                </span>
+                            );
+                        })}
                     </div>
                 )}
 				<div className='flex items-center gap-4 text-[#303330] border-t border-[#F4F4F0]/60 pt-2'>
