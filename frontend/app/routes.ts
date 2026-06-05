@@ -18,4 +18,5 @@ export default [
 	route('pets/profile/:id', 'routes/pets/petProfile.tsx'),
 	route('pets/profile/:id/edit', 'routes/pets/editPet.tsx'),
 	route('settings', 'routes/core/settings.tsx'),
+	route('*', 'routes/not-found.tsx'),
 ] satisfies RouteConfig;
