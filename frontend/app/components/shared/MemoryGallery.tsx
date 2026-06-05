@@ -102,9 +102,9 @@ export default function MemoryGallery({
 					<button
 						type='button'
 						onClick={() => setView('grid')}
-						className={`h-10 w-10 rounded-full flex items-center justify-center ${
+						className={`h-10 w-10 rounded-full flex items-center justify-center transition-all duration-200 hover:bg-[#F4F4F0] hover:text-[#644126] active:scale-[0.96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7D5739]/30 ${
 							view === 'grid'
-								? 'bg-[#FECAA5] text-[#644126]'
+								? 'bg-[#FECAA5] text-[#644126] hover:bg-[#FECAA5]'
 								: 'text-[#5D605C]'
 						}`}
 						aria-label='Grid view'
@@ -114,9 +114,9 @@ export default function MemoryGallery({
 					<button
 						type='button'
 						onClick={() => setView('list')}
-						className={`h-10 w-10 rounded-full flex items-center justify-center ${
+						className={`h-10 w-10 rounded-full flex items-center justify-center transition-all duration-200 hover:bg-[#F4F4F0] hover:text-[#644126] active:scale-[0.96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7D5739]/30 ${
 							view === 'list'
-								? 'bg-[#FECAA5] text-[#644126]'
+								? 'bg-[#FECAA5] text-[#644126] hover:bg-[#FECAA5]'
 								: 'text-[#5D605C]'
 						}`}
 						aria-label='List view'
