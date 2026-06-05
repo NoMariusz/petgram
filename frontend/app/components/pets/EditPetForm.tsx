@@ -7,6 +7,7 @@ import FormTextareaField from '../shared/formFields/FormTextareaField';
 import FileInputField from '../shared/formFields/FileInputField';
 import FormMainButton from '../shared/FormMainButton';
 import SecureImage from '../shared/SecureImage';
+import { ROUTES } from '~/routes';
 
 interface EditPetFormData {
 	name: string;
@@ -82,7 +83,7 @@ export default function EditPetForm({
 				},
 			});
 
-			navigate(`/pets/profile/${initialData.id}`);
+			navigate(ROUTES.pets.profileById(initialData.id));
 		} catch (error) {
 			const message =
 				error instanceof Error
@@ -165,7 +166,7 @@ export default function EditPetForm({
 
 			<div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end'>
 				<Link
-					to={`/pets/profile/${initialData.id}`}
+					to={ROUTES.pets.profileById(initialData.id)}
 					className='flex h-[48px] items-center justify-center rounded-[20px] px-6 text-base font-medium text-[#5D605C]'
 				>
 					Cancel

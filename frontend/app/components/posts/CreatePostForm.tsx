@@ -5,6 +5,7 @@ import FormField from '../shared/formFields/FormField';
 import FormTextareaField from '../shared/formFields/FormTextareaField';
 import FileInputField from '../shared/formFields/FileInputField';
 import FormMainButton from '../shared/FormMainButton';
+import { ROUTES } from '~/routes';
 
 interface CreatePostFormData {
 	text: string;
@@ -117,7 +118,7 @@ export default function CreatePostForm() {
 				},
 			);
 
-			navigate('/users/profile', {
+			navigate(ROUTES.users.profile, {
 				state: { createdPostId: createdPost.id },
 			});
 		} catch (error) {
@@ -240,7 +241,7 @@ export default function CreatePostForm() {
 
 			<div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end'>
 				<Link
-					to='/users/profile'
+					to={ROUTES.users.profile}
 					className='flex h-[48px] items-center justify-center rounded-[20px] px-6 text-base font-medium text-[#5D605C]'
 				>
 					Cancel

@@ -11,6 +11,7 @@ import {
 	LOCAL_STORAGE_ACCESS_TOKEN_KEY,
 	LOCAL_STORAGE_AUTH_STORAGE_KEY,
 } from '~/data/constants';
+import { ROUTES } from '~/routes';
 
 interface LoggedContainerProps {
 	children: ReactNode;
@@ -18,24 +19,24 @@ interface LoggedContainerProps {
 }
 
 const menuItems = [
-	{ key: 'feed', label: 'Feed', to: '/posts/feed', icon: homeIconUrl },
+	{ key: 'feed', label: 'Feed', to: ROUTES.posts.feed, icon: homeIconUrl },
 	{
 		key: 'explore',
 		label: 'Explore',
-		to: '/posts/explore',
+		to: ROUTES.posts.explore,
 		icon: searchIconUrl,
 	},
-	{ key: 'add', label: 'Add', to: '/posts/create', icon: addIconUrl },
+	{ key: 'add', label: 'Add', to: ROUTES.posts.create, icon: addIconUrl },
 	{
 		key: 'messages',
 		label: 'Messages',
-		to: '/messages',
+		to: ROUTES.messages,
 		icon: messageIconUrl,
 	},
 	{
 		key: 'profile',
 		label: 'Profile',
-		to: '/users/profile',
+		to: ROUTES.users.profile,
 		icon: profileIconUrl,
 	},
 ] as const;
@@ -51,7 +52,7 @@ export default function LoggedContainer({
 		try {
 			const response = await apiRequest('/logout', 'POST');
 			if (response.ok) {
-				navigate('/');
+				navigate(ROUTES.home);
 			}
 			localStorage.removeItem(LOCAL_STORAGE_AUTH_STORAGE_KEY);
 			localStorage.removeItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY);
@@ -81,7 +82,7 @@ export default function LoggedContainer({
 						{menuOpen && (
 							<div className='absolute right-0 mt-2 w-44 rounded-[16px] bg-[#FFFEFB] shadow-[0_12px_32px_rgba(48,51,48,0.12)] p-2'>
 								<Link
-									to='/settings'
+									to={ROUTES.settings}
 									className='block rounded-[12px] px-3 py-2 text-sm font-semibold text-[#303330] hover:bg-[#F4F4F0]'
 									onClick={() => setMenuOpen(false)}
 								>
@@ -104,7 +105,7 @@ export default function LoggedContainer({
 					id='leftTopLogo'
 				>
 					<div className='bg-white rounded-b-[34px] shadow-[0_4px_4px_rgba(0,0,0,0.03)] w-[220px] h-[112px] flex items-center justify-center'>
-						<Link to='/'>
+						<Link to={ROUTES.home}>
 							<img
 								src={logoUrl}
 								alt='Petgram'

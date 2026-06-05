@@ -6,6 +6,7 @@ import FormField from '../shared/formFields/FormField';
 import FormTextareaField from '../shared/formFields/FormTextareaField';
 import FileInputField from '../shared/formFields/FileInputField';
 import FormMainButton from '../shared/FormMainButton';
+import { ROUTES } from '~/routes';
 
 interface AddPetFormData {
 	name: string;
@@ -78,7 +79,7 @@ export default function AddPetForm() {
 				},
 			);
 
-			navigate('/users/profile', {
+			navigate(ROUTES.users.profile, {
 				state: { createdPetId: createdPet.id },
 			});
 		} catch (error) {
@@ -161,7 +162,7 @@ export default function AddPetForm() {
 
 			<div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end'>
 				<Link
-					to='/users/profile'
+					to={ROUTES.users.profile}
 					className='flex h-[48px] items-center justify-center rounded-[20px] px-6 text-base font-medium text-[#5D605C]'
 				>
 					Cancel

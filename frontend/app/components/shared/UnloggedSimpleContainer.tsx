@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import logoUrl from '../../assets/logo.svg';
 import { Link } from 'react-router';
+import { ROUTES } from '~/routes';
 
 interface UnloggedSimpleContainerProps {
 	children: ReactNode;
@@ -18,7 +19,7 @@ export default function UnloggedSimpleContainer({
 			<header
 				className={`bg-white rounded-b-[34px] shadow-[0_4px_4px_rgba(0,0,0,0.03)] flex items-center justify-center ${headerClassName}`}
 			>
-				<Link to='/'>
+				<Link to={ROUTES.home}>
 					<img
 						src={logoUrl}
 						alt='Petgram'

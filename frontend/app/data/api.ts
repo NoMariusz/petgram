@@ -1,3 +1,4 @@
+import { ROUTES } from '../routes';
 import { LOCAL_STORAGE_ACCESS_TOKEN_KEY } from './constants';
 
 export interface ApiRequestOptions {
@@ -59,7 +60,7 @@ export async function apiRequest(
 
 	if (res.status === 401 && !options.skipLoginRedirect) {
 		// Handle unauthorized access, e.g., redirect to login page
-		window.location.href = '/login';
+		window.location.href = ROUTES.auth.login;
 	}
 	return res;
 }

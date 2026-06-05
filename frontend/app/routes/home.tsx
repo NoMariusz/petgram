@@ -3,6 +3,7 @@ import logoUrl from '../assets/logo.svg';
 import homeImage from '../assets/home-image.png';
 import FormMainButton from '~/components/shared/FormMainButton';
 import OrDivider from '~/components/shared/OrDivider';
+import { ROUTES } from '../routes';
 
 export default function Home() {
 	const bg = '#FAF9F6';
@@ -50,13 +51,17 @@ export default function Home() {
 
 									<div className='flex flex-col gap-4'>
 										<FormMainButton>
-											<Link to='/login'>Login</Link>
+											<Link to={ROUTES.auth.login}>
+												Login
+											</Link>
 										</FormMainButton>
 
 										<OrDivider className='my-1' />
 
 										<FormMainButton>
-											<Link to='/register'>Sign in</Link>
+											<Link to={ROUTES.auth.register}>
+												Sign in
+											</Link>
 										</FormMainButton>
 									</div>
 
