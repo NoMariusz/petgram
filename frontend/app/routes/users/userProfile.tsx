@@ -329,65 +329,6 @@ export default function UserProfile() {
 									<Link
 										key={pet.id}
 										to={`/pets/profile/${pet.id}`}
-										className='w-[170px] rounded-[16px] bg-[#FFFEFB] shadow-[0_12px_32px_rgba(48,51,48,0.06)] p-3'
-									>
-										<div className='h-[120px] w-full overflow-hidden rounded-[16px] bg-[#E7E9E4]'>
-											{pet.profilePictureUrl && (
-												<SecureImage
-													src={pet.profilePictureUrl}
-													alt={pet.name}
-													className='h-full w-full object-cover'
-												/>
-											)}
-										</div>
-										<div className='mt-3 flex flex-col gap-1'>
-											<span className='text-[16px] font-bold text-[#000000]'>
-												{pet.name}
-											</span>
-											<span className='text-[15px] text-[#000000]'>
-												profile ↗
-											</span>
-										</div>
-									</Link>
-								))
-							)}
-							{isOwnProfile && (
-								<Link
-									to='/pets/add'
-									className='flex min-h-[190px] w-[170px] flex-col items-center justify-center rounded-[16px] border-2 border-dashed border-[#FECAA5] bg-[#FFFEFB] p-4 text-center shadow-[0_12px_32px_rgba(48,51,48,0.06)]'
-								>
-									<span className='flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#7D5739] to-[#FECAA5] text-2xl font-bold text-[#FFF7F4]'>
-										+
-									</span>
-									<span className='mt-4 text-[16px] font-bold text-[#303330]'>
-										Add a pet
-									</span>
-								</Link>
-							)}
-						</div>
-					</section>
-
-					<section className='space-y-4'>
-						<h2 className='text-[20px] font-bold text-[#303330]'>
-							My pets
-						</h2>
-						<div className='flex flex-wrap gap-6'>
-							{userProfile.pets.length === 0 ? (
-								<div className='rounded-[16px] bg-[#FFFEFB] p-6 text-sm text-[#5D605C] shadow-[0_12px_32px_rgba(48,51,48,0.06)]'>
-									{isOwnProfile ? (
-										<p>
-											There is no pets, sooo Let's add
-											some pets to your profile!
-										</p>
-									) : (
-										<p>No pets yet.</p>
-									)}
-								</div>
-							) : (
-								userProfile.pets.map((pet) => (
-									<Link
-										key={pet.id}
-										to={`/pets/profile/${pet.id}`}
 										className='w-[180px] overflow-hidden rounded-[18px] bg-[#FFFEFB] shadow-[0_12px_32px_rgba(48,51,48,0.06)] transition-all duration-200 hover:shadow-[0_16px_36px_rgba(48,51,48,0.1)]'
 									>
 										<div className='h-[128px] w-full overflow-hidden bg-[#E7E9E4]'>
