@@ -1,4 +1,5 @@
-import { useState, FormEvent } from 'react';
+import { useState } from 'react';
+import type { FormEvent } from 'react';
 import LoggedContainer from '~/components/shared/LoggedContainer';
 import { apiRequest } from '~/data/api';
 import type { PostListItem } from '~/data/types';
