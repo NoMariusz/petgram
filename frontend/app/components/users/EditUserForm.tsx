@@ -151,9 +151,19 @@ export default function EditUserForm({
 				/>
 			</div>
 
-			<FormMainButton type='submit' disabled={loading}>
-				{loading ? 'Saving changes...' : 'Save Changes'}
-			</FormMainButton>
+			<div className='flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-end'>
+				<Link
+					to='/users/profile'
+					className='flex h-[48px] items-center justify-center rounded-[20px] px-6 text-base font-medium text-[#5D605C]'
+				>
+					Cancel
+				</Link>
+				<div className='w-full sm:w-[240px]'>
+					<FormMainButton type='submit' disabled={loading}>
+						{loading ? 'Saving changes...' : 'Save Changes'}
+					</FormMainButton>
+				</div>
+			</div>
 		</form>
 	);
 }
