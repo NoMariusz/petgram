@@ -292,9 +292,9 @@ export default function UserProfile() {
                   <Link
                     key={pet.id}
                     to={`/pets/profile/${pet.id}`}
-                    className="w-[170px] rounded-[16px] bg-[#FFFEFB] shadow-[0_12px_32px_rgba(48,51,48,0.06)] p-3"
+                    className="w-[180px] overflow-hidden rounded-[18px] bg-[#FFFEFB] shadow-[0_12px_32px_rgba(48,51,48,0.06)] transition-all duration-200 hover:shadow-[0_16px_36px_rgba(48,51,48,0.1)]"
                   >
-                    <div className="h-[120px] w-full overflow-hidden rounded-[16px] bg-[#E7E9E4]">
+                    <div className="h-[128px] w-full overflow-hidden bg-[#E7E9E4]">
                       {pet.profilePictureUrl && (
                         <SecureImage
                           src={pet.profilePictureUrl}
@@ -303,7 +303,7 @@ export default function UserProfile() {
                         />
                       )}
                     </div>
-                    <div className="mt-3 flex flex-col gap-1">
+                    <div className="flex flex-col gap-1 px-4 py-4">
                       <span className="text-[16px] font-bold text-[#000000]">{pet.name}</span>
                       <span className="text-[15px] text-[#000000]">profile ↗</span>
                     </div>
@@ -313,12 +313,12 @@ export default function UserProfile() {
               {isOwnProfile && (
                 <Link
                   to="/pets/add"
-                  className="flex min-h-[190px] w-[170px] flex-col items-center justify-center rounded-[16px] border-2 border-dashed border-[#FECAA5] bg-[#FFFEFB] p-4 text-center shadow-[0_12px_32px_rgba(48,51,48,0.06)]"
+                  className="flex min-h-[198px] w-[180px] flex-col items-center justify-center rounded-[18px] border border-dashed border-[#D5D7D3] bg-[#FFFEFB]/70 p-4 text-center text-[#5D605C] transition-colors duration-200 hover:border-[#C7B8AA] hover:bg-[#FFFEFB]"
                 >
-                  <span className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#7D5739] to-[#FECAA5] text-2xl font-bold text-[#FFF7F4]">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-full border border-[#D5D7D3] bg-white text-2xl font-semibold text-[#7D5739]">
                     +
                   </span>
-                  <span className="mt-4 text-[16px] font-bold text-[#303330]">Add a pet</span>
+                  <span className="mt-3 text-[15px] font-semibold text-[#303330]">Add a pet</span>
                 </Link>
               )}
             </div>
