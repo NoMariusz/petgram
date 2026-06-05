@@ -3,7 +3,7 @@ import { useState } from 'react';
 import loginTextUrl from '../../assets/loginText.svg';
 import googleLogoUrl from '../../assets/googleLogo.png';
 import truthSocialLogoUrl from '../../assets/truthSocialLogo.png';
-import { apiRequest } from '../../data/api';
+import { apiRequestJson } from '../../data/api';
 import FormMainButton from '../shared/FormMainButton';
 import FormSecondaryButton from '../shared/FormSecondaryButton';
 import OrDivider from '../shared/OrDivider';
@@ -28,10 +28,6 @@ interface LoginResponse {
 	accessToken: string;
 	tokenType: string;
 	expiresInSeconds: number;
-}
-
-interface ApiError {
-	error?: string;
 }
 
 function persistAuthSession(response: LoginResponse) {
@@ -79,33 +75,26 @@ export default function LoginForm() {
 		setApiError('');
 
 		try {
-			const response = await apiRequest('/login', 'POST', {
-				jsonBody: {
-					login: formData.username,
-					password: formData.password,
+			const result = await apiRequestJson<LoginResponse>(
+				'/login',
+				'POST',
+				{
+					jsonBody: {
+						login: formData.username,
+						password: formData.password,
+					},
+					skipLoginRedirect: true,
 				},
-				skipLoginRedirect: true,
-			});
+			);
 
-			if (!response.ok) {
-				let message = `Login failed (${response.status})`;
-				try {
-					const errorData: ApiError = await response.json();
-					if (errorData.error) {
-						message = errorData.error;
-					}
-				} catch {
-					// Non-JSON error response; keep fallback message.
-				}
-				setApiError(message);
-				return;
-			}
-
-			const result: LoginResponse = await response.json();
 			persistAuthSession(result);
 			navigate('/posts/feed');
-		} catch {
-			setApiError('Network error. Please try again.');
+		} catch (error) {
+			const message =
+				error instanceof Error
+					? error.message
+					: 'Network error. Please try again.';
+			setApiError(message);
 		} finally {
 			setLoading(false);
 		}

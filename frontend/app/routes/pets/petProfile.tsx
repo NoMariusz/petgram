@@ -6,7 +6,7 @@ import MemoryGallery from '~/components/shared/MemoryGallery';
 import SecureImage from '~/components/shared/SecureImage';
 import SimpleAccentButton from '~/components/shared/SimpleAccentButton';
 import shareIconUrl from '~/assets/share_icon.svg';
-import { apiRequest } from '~/data/api';
+import { apiRequest, apiRequestJson } from '~/data/api';
 import type { PetProfileResponse } from '~/data/types';
 
 function formatCount(value: number) {
@@ -50,8 +50,9 @@ function PawBadge() {
 
 export default function PetProfile() {
 	const { id } = useParams();
-	const [petProfile, setPetProfile] =
-		useState<PetProfileResponse | null>(null);
+	const [petProfile, setPetProfile] = useState<PetProfileResponse | null>(
+		null,
+	);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isFollowLoading, setIsFollowLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -65,12 +66,8 @@ export default function PetProfile() {
 
 		setIsLoading(true);
 		setError(null);
-		apiRequest(`/pets/${id}`)
-			.then(async (response) => {
-				if (!response.ok) {
-					throw new Error(`Request failed (${response.status})`);
-				}
-				const data = (await response.json()) as PetProfileResponse;
+		apiRequestJson<PetProfileResponse>(`/pets/${id}`)
+			.then((data) => {
 				setPetProfile(data);
 			})
 			.catch((error) => {

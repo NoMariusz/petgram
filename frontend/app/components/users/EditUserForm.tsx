@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { apiRequest } from '../../data/api';
+import { apiRequestJson } from '../../data/api';
 import FormField from '../shared/formFields/FormField';
 import FormTextareaField from '../shared/formFields/FormTextareaField';
 import FileInputField from '../shared/formFields/FileInputField';
 import FormMainButton from '../shared/FormMainButton';
 import signInTextUrl from '../../assets/signInText.svg';
-import type { ApiError } from '~/data/types';
 
 interface FormData {
 	firstName: string;
@@ -66,20 +65,16 @@ export default function EditUserForm({
 		setApiError('');
 
 		try {
-			const response = await apiRequest('/users/me', 'PATCH', {
+			await apiRequestJson<unknown>('/users/me', 'PATCH', {
 				jsonBody: formData,
 			});
-
-			if (!response.ok) {
-				const errorData: ApiError = await response.json();
-				setApiError(errorData.error || 'Edit failed');
-				return;
-			}
-
-			const result = await response.json();
 			navigate('/users/profile');
 		} catch (error) {
-			setApiError('An error occurred. Please try again.');
+			const message =
+				error instanceof Error
+					? error.message
+					: 'An error occurred. Please try again.';
+			setApiError(message);
 			console.error('Edit error:', error);
 		} finally {
 			setLoading(false);

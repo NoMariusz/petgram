@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { apiRequest } from '~/data/api';
-import type { ApiError } from '~/data/types';
+import { apiRequestJson } from '~/data/api';
 import FormField from '../shared/formFields/FormField';
 import FormTextareaField from '../shared/formFields/FormTextareaField';
 import FileInputField from '../shared/formFields/FileInputField';
@@ -36,11 +35,11 @@ export default function CreatePostForm() {
 	useEffect(() => {
 		const fetchUserPets = async () => {
 			try {
-				const response = await apiRequest('/users/me/profile', 'GET');
-				if (response.ok) {
-					const data = await response.json();
-					setUserPets(data.pets || data.petResponses || []);
-				}
+				const data = await apiRequestJson<{
+					pets?: PetOption[];
+					petResponses?: PetOption[];
+				}>('/users/me/profile', 'GET');
+				setUserPets(data.pets || data.petResponses || []);
 			} catch (error) {
 				console.error('Failed to fetch user profile data:', error);
 			} finally {
@@ -52,7 +51,9 @@ export default function CreatePostForm() {
 	}, []);
 
 	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+		e: React.ChangeEvent<
+			HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+		>,
 	) => {
 		const target = e.target as HTMLInputElement;
 		const { name, value, type } = target;
@@ -82,7 +83,7 @@ export default function CreatePostForm() {
 			const selectTarget = e.target as HTMLSelectElement;
 			const selectedValues = Array.from(
 				selectTarget.selectedOptions,
-				(option) => option.value
+				(option) => option.value,
 			);
 			setFormData((prev) => ({
 				...prev,
@@ -103,35 +104,28 @@ export default function CreatePostForm() {
 		setApiError('');
 
 		try {
-			const response = await apiRequest('/posts', 'POST', {
-				jsonBody: {
-					text: formData.text,
-					picture: formData.picture || null,
-					pets: formData.pets.length > 0 ? formData.pets : null,
-					postPicture: formData.postPicture || null,
+			const createdPost = await apiRequestJson<{ id: number }>(
+				'/posts',
+				'POST',
+				{
+					jsonBody: {
+						text: formData.text,
+						picture: formData.picture || null,
+						pets: formData.pets.length > 0 ? formData.pets : null,
+						postPicture: formData.postPicture || null,
+					},
 				},
-			});
+			);
 
-			if (!response.ok) {
-				let message = `Could not create post (${response.status})`;
-				try {
-					const errorData: ApiError = await response.json();
-					if (errorData.error) {
-						message = errorData.error;
-					}
-				} catch {
-					// Keep fallback message for non-JSON responses.
-				}
-				setApiError(message);
-				return;
-			}
-
-			const createdPost = await response.json();
 			navigate('/users/profile', {
 				state: { createdPostId: createdPost.id },
 			});
-		} catch {
-			setApiError('Network error. Please try again.');
+		} catch (error) {
+			const message =
+				error instanceof Error
+					? error.message
+					: 'Network error. Please try again.';
+			setApiError(message);
 		} finally {
 			setLoading(false);
 		}
@@ -146,7 +140,6 @@ export default function CreatePostForm() {
 			)}
 
 			<div className='grid gap-8 lg:grid-cols-[300px_1fr] lg:items-start'>
-
 				<div className='flex flex-col items-center gap-4'>
 					<div className='flex h-[300px] w-full items-center justify-center overflow-hidden rounded-[20px] bg-[#E7E9E4] shadow-[0_14px_32px_rgba(48,51,48,0.08)]'>
 						{formData.postPicture ? (
@@ -157,10 +150,22 @@ export default function CreatePostForm() {
 							/>
 						) : (
 							<div className='flex flex-col items-center gap-2 text-[#7D5739]'>
-								<svg className="w-12 h-12 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+								<svg
+									className='w-12 h-12 opacity-50'
+									fill='none'
+									stroke='currentColor'
+									viewBox='0 0 24 24'
+								>
+									<path
+										strokeLinecap='round'
+										strokeLinejoin='round'
+										strokeWidth='2'
+										d='M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z'
+									></path>
 								</svg>
-								<span className="text-sm font-medium opacity-70">No image selected</span>
+								<span className='text-sm font-medium opacity-70'>
+									No image selected
+								</span>
 							</div>
 						)}
 					</div>
@@ -181,29 +186,41 @@ export default function CreatePostForm() {
 						rows={5}
 					/>
 
-					<div className="flex flex-col gap-2">
-						<label className="text-sm font-semibold text-[#303330]">
+					<div className='flex flex-col gap-2'>
+						<label className='text-sm font-semibold text-[#303330]'>
 							Tag your pets
 						</label>
 						<select
 							multiple
-							name="pets"
+							name='pets'
 							value={formData.pets}
 							onChange={handleChange}
 							disabled={fetchingPets || userPets.length === 0}
-							className="min-h-[100px] w-full rounded-[10px] border border-[#D5D7D3] bg-white px-4 py-3 text-base text-[#303330] focus:border-[#7D5739] focus:outline-none focus:ring-1 focus:ring-[#7D5739] disabled:bg-gray-50 disabled:text-gray-400"
+							className='min-h-[100px] w-full rounded-[10px] border border-[#D5D7D3] bg-white px-4 py-3 text-base text-[#303330] focus:border-[#7D5739] focus:outline-none focus:ring-1 focus:ring-[#7D5739] disabled:bg-gray-50 disabled:text-gray-400'
 						>
 							{fetchingPets ? (
-								<option value="" disabled>Loading your pets...</option>
+								<option value='' disabled>
+									Loading your pets...
+								</option>
 							) : userPets.length === 0 ? (
-								<option value="" disabled>You don't have any pets yet</option>
+								<option value='' disabled>
+									You don't have any pets yet
+								</option>
 							) : (
 								<>
-									<option value="" disabled className="text-gray-400">
-										Select pets (Hold Ctrl/Cmd to select multiple)
+									<option
+										value=''
+										disabled
+										className='text-gray-400'
+									>
+										Select pets (Hold Ctrl/Cmd to select
+										multiple)
 									</option>
 									{userPets.map((pet) => (
-										<option key={pet.name} value={String(pet.name)}>
+										<option
+											key={pet.name}
+											value={String(pet.name)}
+										>
 											{pet.name}
 										</option>
 									))}
@@ -231,7 +248,10 @@ export default function CreatePostForm() {
 				<div className='w-full sm:w-[240px]'>
 					<FormMainButton
 						type='submit'
-						disabled={loading || (!formData.text.trim() && !formData.postPicture)}
+						disabled={
+							loading ||
+							(!formData.text.trim() && !formData.postPicture)
+						}
 					>
 						{loading ? 'Posting...' : 'Create post'}
 					</FormMainButton>

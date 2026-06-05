@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import LoggedContainer from '~/components/shared/LoggedContainer';
-import { apiRequest } from '~/data/api';
+import { apiRequestJson } from '~/data/api';
 import type { PostListItem } from '~/data/types';
 import PostInstagramItem from '~/components/shared/PostInstagramItem';
 
@@ -30,12 +30,7 @@ export default function Feed() {
 				url += `&cursor=${cursor}`;
 			}
 
-			const response = await apiRequest(url, 'GET');
-			if (!response.ok) {
-				throw new Error(`Failed to fetch feed: ${response.status}`);
-			}
-
-			const data = (await response.json()) as FeedResponseData;
+			const data = await apiRequestJson<FeedResponseData>(url, 'GET');
 
 			if (isInitialLoad) {
 				setPosts(data.posts);
@@ -45,7 +40,9 @@ export default function Feed() {
 			setNextCursor(data.nextCursor);
 		} catch (err) {
 			console.error('Error loading feed stream:', err);
-			setError('We could not load your feed right now. Please check back soon.');
+			setError(
+				'We could not load your feed right now. Please check back soon.',
+			);
 		} finally {
 			setIsLoadingInitial(false);
 			setIsFetchingMore(false);
@@ -62,7 +59,10 @@ export default function Feed() {
 				<main className='pb-12'>
 					{isLoadingInitial ? (
 						[1, 2].map((sk) => (
-							<div key={sk} className='w-full rounded-[24px] bg-[#FFFEFB] border border-[#F4F4F0] p-4 mb-8 space-y-4 animate-pulse'>
+							<div
+								key={sk}
+								className='w-full rounded-[24px] bg-[#FFFEFB] border border-[#F4F4F0] p-4 mb-8 space-y-4 animate-pulse'
+							>
 								<div className='flex items-center gap-3'>
 									<div className='h-9 w-9 bg-[#E7E9E4] rounded-full' />
 									<div className='space-y-2 flex-1'>
@@ -80,9 +80,12 @@ export default function Feed() {
 					) : posts.length === 0 ? (
 						<div className='flex flex-col items-center justify-center rounded-[24px] bg-[#FFFEFB] p-10 border border-[#F4F4F0] text-center shadow-[0_8px_24px_rgba(48,51,48,0.04)]'>
 							<div className='text-3xl mb-3'>🏡</div>
-							<h3 className='text-sm font-bold text-[#303330]'>Welcome to your Feed!</h3>
+							<h3 className='text-sm font-bold text-[#303330]'>
+								Welcome to your Feed!
+							</h3>
 							<p className='mt-1 text-xs font-medium text-[#5D605C] max-w-xs leading-relaxed'>
-								Follow other pets or owners to view their timeline memories right here.
+								Follow other pets or owners to view their
+								timeline memories right here.
 							</p>
 						</div>
 					) : (
@@ -96,20 +99,22 @@ export default function Feed() {
 							))}
 
 							{nextCursor !== null && (
-								<div className="flex justify-center pt-2">
+								<div className='flex justify-center pt-2'>
 									<button
-										type="button"
+										type='button'
 										onClick={() => fetchFeed(nextCursor)}
 										disabled={isFetchingMore}
-										className="rounded-full bg-[#FFFEFB] border border-[#D5D7D3] px-6 py-2.5 text-xs font-bold text-[#303330] shadow-sm transition-all hover:bg-[#FAF9F6] disabled:opacity-50"
+										className='rounded-full bg-[#FFFEFB] border border-[#D5D7D3] px-6 py-2.5 text-xs font-bold text-[#303330] shadow-sm transition-all hover:bg-[#FAF9F6] disabled:opacity-50'
 									>
-										{isFetchingMore ? 'Loading older moments...' : 'View older memories'}
+										{isFetchingMore
+											? 'Loading older moments...'
+											: 'View older memories'}
 									</button>
 								</div>
 							)}
 
 							{nextCursor === null && posts.length > 0 && (
-								<div className="text-center pt-4 text-xs font-bold text-[#5D605C]/60 tracking-wider uppercase">
+								<div className='text-center pt-4 text-xs font-bold text-[#5D605C]/60 tracking-wider uppercase'>
 									🏁 You've caught up on everything!
 								</div>
 							)}

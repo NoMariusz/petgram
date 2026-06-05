@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { apiRequest } from '~/data/api';
-import type { ApiError, PetCreateResponse } from '~/data/types';
+import { apiRequestJson } from '~/data/api';
+import type { PetCreateResponse } from '~/data/types';
 import FormField from '../shared/formFields/FormField';
 import FormTextareaField from '../shared/formFields/FormTextareaField';
 import FileInputField from '../shared/formFields/FileInputField';
@@ -64,35 +64,29 @@ export default function AddPetForm() {
 		setApiError('');
 
 		try {
-			const response = await apiRequest('/pets', 'POST', {
-				jsonBody: {
-					name: formData.name,
-					bio: formData.bio || null,
-					bornAt: formData.bornAt || null,
-					profilePictureImage: formData.profilePictureImage || null,
+			const createdPet = await apiRequestJson<PetCreateResponse>(
+				'/pets',
+				'POST',
+				{
+					jsonBody: {
+						name: formData.name,
+						bio: formData.bio || null,
+						bornAt: formData.bornAt || null,
+						profilePictureImage:
+							formData.profilePictureImage || null,
+					},
 				},
-			});
+			);
 
-			if (!response.ok) {
-				let message = `Could not add pet (${response.status})`;
-				try {
-					const errorData: ApiError = await response.json();
-					if (errorData.error) {
-						message = errorData.error;
-					}
-				} catch {
-					// Keep fallback message for non-JSON responses.
-				}
-				setApiError(message);
-				return;
-			}
-
-			const createdPet = (await response.json()) as PetCreateResponse;
 			navigate('/users/profile', {
 				state: { createdPetId: createdPet.id },
 			});
-		} catch {
-			setApiError('Network error. Please try again.');
+		} catch (error) {
+			const message =
+				error instanceof Error
+					? error.message
+					: 'Network error. Please try again.';
+			setApiError(message);
 		} finally {
 			setLoading(false);
 		}

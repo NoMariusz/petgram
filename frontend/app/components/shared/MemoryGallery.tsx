@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
-import { apiRequest } from '~/data/api';
+import { apiRequestJson } from '~/data/api';
 import type { PostListItem } from '~/data/types';
 import SecureImage from './SecureImage';
 import PostVerticalListItem from './PostVerticalListItem';
@@ -76,13 +76,7 @@ export default function MemoryGallery({
 					? `/posts/users/${id}/all`
 					: `/posts/pets/${id}/memories`;
 			try {
-				const response = await apiRequest(url);
-				if (!response.ok) {
-					throw new Error(
-						`Failed to fetch memories: ${response.statusText}`,
-					);
-				}
-				const data = await response.json();
+				const data = await apiRequestJson<MemoryGalleryItem[]>(url);
 				setItems(data);
 			} catch (error) {
 				console.error('Error fetching memories:', error);

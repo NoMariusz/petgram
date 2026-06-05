@@ -3,7 +3,7 @@ import { LoggedContainer } from '~/components/shared';
 import { useEffect, useState } from 'react';
 import type { UserDataResponse } from '~/data/types';
 import Loader from '~/components/shared/Loader';
-import { apiRequest } from '~/data/api';
+import { apiRequestJson } from '~/data/api';
 
 export default function EditProfile() {
 	const [userData, setUserData] = useState<UserDataResponse | null>(null);
@@ -11,13 +11,8 @@ export default function EditProfile() {
 	useEffect(() => {
 		async function fetchUserData() {
 			try {
-				const response = await apiRequest('/users/me');
-				if (!response.ok) {
-					throw new Error(
-						`Failed to fetch user data: ${response.statusText}`,
-					);
-				}
-				const data = await response.json();
+				const data =
+					await apiRequestJson<UserDataResponse>('/users/me');
 				setUserData(data);
 			} catch (error) {
 				console.error('Error fetching user data:', error);

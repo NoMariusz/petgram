@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { apiRequest } from '../../data/api';
+import { apiRequestJson } from '../../data/api';
 import FormField from '../shared/formFields/FormField';
 import FormTextareaField from '../shared/formFields/FormTextareaField';
 import FileInputField from '../shared/formFields/FileInputField';
 import FormMainButton from '../shared/FormMainButton';
 import signInTextUrl from '../../assets/signInText.svg';
-import type { ApiError } from '~/data/types';
 
 interface FormData {
 	username: string;
@@ -84,23 +83,24 @@ export default function RegisterForm() {
 		setApiError('');
 
 		try {
-			const response = await apiRequest('/users', 'POST', {
-				jsonBody: formData,
-				skipLoginRedirect: true,
-			});
+			const result = await apiRequestJson<{ email: string }>(
+				'/users',
+				'POST',
+				{
+					jsonBody: formData,
+					skipLoginRedirect: true,
+				},
+			);
 
-			if (!response.ok) {
-				const errorData: ApiError = await response.json();
-				setApiError(errorData.error || 'Registration failed');
-				return;
-			}
-
-			const result = await response.json();
 			navigate('/register-email-send', {
 				state: { email: result.email },
 			});
 		} catch (error) {
-			setApiError('An error occurred. Please try again.');
+			const message =
+				error instanceof Error
+					? error.message
+					: 'An error occurred. Please try again.';
+			setApiError(message);
 			console.error('Registration error:', error);
 		} finally {
 			setLoading(false);

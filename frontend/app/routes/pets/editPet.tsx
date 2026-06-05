@@ -3,13 +3,14 @@ import { Link, useParams } from 'react-router';
 import EditPetForm from '~/components/pets/EditPetForm';
 import LoggedContainer from '~/components/shared/LoggedContainer';
 import Loader from '~/components/shared/Loader';
-import { apiRequest } from '~/data/api';
+import { apiRequestJson } from '~/data/api';
 import type { PetProfileResponse } from '~/data/types';
 
 export default function EditPet() {
 	const { id } = useParams();
-	const [petProfile, setPetProfile] =
-		useState<PetProfileResponse | null>(null);
+	const [petProfile, setPetProfile] = useState<PetProfileResponse | null>(
+		null,
+	);
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 
@@ -22,12 +23,8 @@ export default function EditPet() {
 
 		setIsLoading(true);
 		setError(null);
-		apiRequest(`/pets/${id}`)
-			.then(async (response) => {
-				if (!response.ok) {
-					throw new Error(`Request failed (${response.status})`);
-				}
-				const data = (await response.json()) as PetProfileResponse;
+		apiRequestJson<PetProfileResponse>(`/pets/${id}`)
+			.then((data) => {
 				setPetProfile(data);
 			})
 			.catch((error) => {

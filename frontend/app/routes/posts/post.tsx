@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router';
-import { apiRequest } from '~/data/api';
+import { apiRequestJson } from '~/data/api';
 import SecureImage from '~/components/shared/SecureImage';
 import { formatCreationDate } from '~/components/shared/PostInstagramItem';
 import { LoggedContainer } from '~/components/shared';
@@ -80,20 +80,11 @@ export default function Post() {
 		setError(null);
 
 		Promise.all([
-			apiRequest(`/posts/${id}`).then((res) => {
-				if (!res.ok) throw new Error(`Post not found (${res.status})`);
-				return res.json() as Promise<PostSummaryResponse>;
-			}),
-			apiRequest(`/posts/${id}/like`).then((res) => {
-				if (!res.ok)
-					throw new Error(`Likes fetch failed (${res.status})`);
-				return res.json() as Promise<PostLikeSummaryResponse>;
-			}),
-			apiRequest(`/posts/${id}/comment`).then((res) => {
-				if (!res.ok)
-					throw new Error(`Comments fetch failed (${res.status})`);
-				return res.json() as Promise<PostCommentSummaryResponse[]>;
-			}),
+			apiRequestJson<PostSummaryResponse>(`/posts/${id}`),
+			apiRequestJson<PostLikeSummaryResponse>(`/posts/${id}/like`),
+			apiRequestJson<PostCommentSummaryResponse[]>(
+				`/posts/${id}/comment`,
+			),
 		])
 			.then(async ([postData, likesData, commentsData]) => {
 				setPost(postData);
@@ -102,27 +93,21 @@ export default function Post() {
 
 				if (postData.creatorName) {
 					try {
-						const userRes = await apiRequest(
+						const userData = await apiRequestJson<UserDataResponse>(
 							`/users/${postData.creatorName}?username=${postData.creatorName}`,
 						);
-						if (!userRes.ok) return;
-						const userData =
-							(await userRes.json()) as UserDataResponse;
 						setAuthorDetails(userData);
 
-						const profileRes = await apiRequest(
-							`/users/${userData.id}/profile`,
-						);
-						if (profileRes.ok) {
-							const profileData =
-								(await profileRes.json()) as UserProfileResponse;
+						const profileData =
+							await apiRequestJson<UserProfileResponse>(
+								`/users/${userData.id}/profile`,
+							);
 
-							const mappedPets: Record<string, number> = {};
-							profileData.pets?.forEach((pet) => {
-								mappedPets[pet.name] = pet.id;
-							});
-							setPetNameToIdMap(mappedPets);
-						}
+						const mappedPets: Record<string, number> = {};
+						profileData.pets?.forEach((pet) => {
+							mappedPets[pet.name] = pet.id;
+						});
+						setPetNameToIdMap(mappedPets);
 					} catch (e) {
 						console.error(
 							'Failed to fetch author or pet details:',
@@ -155,14 +140,11 @@ export default function Post() {
 		});
 
 		try {
-			const response = await apiRequest(`/posts/${id}/like`, 'POST');
-			if (response.ok) {
-				const freshLikeData =
-					(await response.json()) as PostLikeSummaryResponse;
-				setLikeData(freshLikeData);
-			} else {
-				throw new Error('Server returned error status');
-			}
+			const freshLikeData = await apiRequestJson<PostLikeSummaryResponse>(
+				`/posts/${id}/like`,
+				'POST',
+			);
+			setLikeData(freshLikeData);
 		} catch (err) {
 			console.error('Failed to toggle like state:', err);
 			setLikeData({
@@ -179,18 +161,16 @@ export default function Post() {
 
 		setSubmittingComment(true);
 		try {
-			const response = await apiRequest(`/posts/${id}/comment`, 'POST', {
-				jsonBody: { text: newComment.trim() },
-			});
-
-			if (response.ok) {
-				const freshComment =
-					(await response.json()) as PostCommentSummaryResponse;
-				setComments((prev) => [...prev, freshComment]);
-				setNewComment('');
-			} else {
-				console.error('Could not post comment:', response.status);
-			}
+			const freshComment =
+				await apiRequestJson<PostCommentSummaryResponse>(
+					`/posts/${id}/comment`,
+					'POST',
+					{
+						jsonBody: { text: newComment.trim() },
+					},
+				);
+			setComments((prev) => [...prev, freshComment]);
+			setNewComment('');
 		} catch (err) {
 			console.error('Error adding comment:', err);
 		} finally {
