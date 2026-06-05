@@ -22,9 +22,7 @@ export default function PostVerticalListItem({
 						className='h-full w-full object-cover'
 					/>
 				</div>
-			) : (
-				<div className='w-full sm:w-[12px] bg-[#FECAA5] flex-shrink-0' />
-			)}
+			) : null}
 
 			<div className='flex flex-col justify-between p-5 flex-grow gap-4'>
 				<div className='space-y-2'>

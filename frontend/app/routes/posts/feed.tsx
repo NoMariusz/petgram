@@ -115,7 +115,7 @@ export default function Feed() {
 
 							{nextCursor === null && posts.length > 0 && (
 								<div className='text-center pt-4 text-xs font-bold text-[#5D605C]/60 tracking-wider uppercase'>
-									🏁 You've caught up on everything!
+									You've caught up on everything!
 								</div>
 							)}
 						</div>

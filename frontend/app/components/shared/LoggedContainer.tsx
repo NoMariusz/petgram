@@ -101,7 +101,7 @@ export default function LoggedContainer({
 				</div>
 
 				<div
-					className='absolute left-6 md:left-12 top-0'
+					className='absolute left-6 md:left-12 top-0 hidden lg:block'
 					id='leftTopLogo'
 				>
 					<div className='bg-white rounded-b-[34px] shadow-[0_4px_4px_rgba(0,0,0,0.03)] w-[220px] h-[112px] flex items-center justify-center'>

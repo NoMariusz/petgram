@@ -12,16 +12,16 @@ export default function Home() {
 		<main style={{ background: bg }} className='min-h-screen flex flex-col'>
 			<header
 				className='w-full flex items-center justify-center rounded-xl overflow-hidden shadow-lg'
-				style={{ height: '20vh' }}
+				style={{ height: '16vh' }}
 			>
-				<img src={logoUrl} alt='Petgram' className='h-22' />
+				<img src={logoUrl} alt='Petgram' className='h-20' />
 			</header>
 
 			<section className='w-full p-4' style={{ height: '80vh' }}>
 				<div className='h-full px-6 2xl:container mx-auto'>
-					<div className='h-full flex flex-col md:flex-row gap-6 items-stretch'>
+					<div className='h-full flex flex-col md:flex-row gap-12 pt-6 items-stretch'>
 						<div
-							className='md:w-2/3 rounded-xl overflow-hidden shadow-lg relative flex items-center'
+							className='hidden md:flex md:w-2/3 rounded-xl overflow-hidden shadow-lg relative items-center'
 							style={{
 								backgroundImage: `url(${homeImage})`,
 								backgroundSize: 'cover',
@@ -49,7 +49,7 @@ export default function Home() {
 										Welcome to your pet community
 									</div>
 
-									<div className='flex flex-col gap-4'>
+									<div className='flex flex-col gap-4 px-4'>
 										<FormMainButton>
 											<Link to={ROUTES.auth.login}>
 												Login
@@ -66,7 +66,7 @@ export default function Home() {
 									</div>
 
 									<div className='empty'></div>
-									<p className='text-center text-[15px] leading-[19px] text-black max-w-[464px] mx-auto pb-1'>
+									<p className='text-center text-[13px] leading-[19px] text-gray-500 max-w-[464px] mx-auto pb-1'>
 										By clicking Login or Sign in, you agree
 										to Petgram`s User Agreement, Privacy
 										Policy, and Cookie Policy.
