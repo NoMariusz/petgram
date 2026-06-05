@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router';
 import { apiRequest } from '~/data/api';
 import SecureImage from '~/components/shared/SecureImage';
 import { formatCreationDate } from "~/components/shared/PostInstagramItem"
+import LoggedContainer from '~/components/shared/LoggedContainer';
 
 interface PostSummaryResponse {
 	id: number;
@@ -54,6 +55,7 @@ export default function Post() {
 	const [post, setPost] = useState<PostSummaryResponse | null>(null);
 	const [authorDetails, setAuthorDetails] = useState<UserDataResponse | null>(null);
 	const [petNameToIdMap, setPetNameToIdMap] = useState<Record<string, number>>({});
+	const [petNameToPetMap, setPetNameToPetMap] = useState<Record<string, UserProfilePetResponse>>({});
 	const [likeData, setLikeData] = useState<PostLikeSummaryResponse | null>(null);
 	const [comments, setComments] = useState<PostCommentSummaryResponse[]>([]);
 
@@ -103,10 +105,13 @@ export default function Post() {
 							const profileData = await profileRes.json() as UserProfileResponse;
 
 							const mappedPets: Record<string, number> = {};
+							const mappedPetProfiles: Record<string, UserProfilePetResponse> = {};
 							profileData.pets?.forEach((pet) => {
 								mappedPets[pet.name] = pet.id;
+								mappedPetProfiles[pet.name] = pet;
 							});
 							setPetNameToIdMap(mappedPets);
+							setPetNameToPetMap(mappedPetProfiles);
 						}
 					} catch (e) {
 						console.error('Failed to fetch author or pet details:', e);
@@ -199,30 +204,80 @@ export default function Post() {
 		? `${authorDetails.firstName || ''} ${authorDetails.lastName || ''}`.trim() || `@${authorUsername}`
 		: `@${authorUsername}`;
 	const authorId = authorDetails?.id || null;
+	const primaryPetName = post.pets?.[0] || null;
+	const primaryPet = primaryPetName ? petNameToPetMap[primaryPetName] : null;
+	const primaryPetProfileLink = primaryPet ? `/pets/profile/${primaryPet.id}` : null;
+	const postHeaderTitle = primaryPetName || authorDisplayName;
 
 	return (
-		<div className='mx-auto max-w-3xl px-4 py-8 lg:px-0 animate-fadeIn'>
-			<article className='overflow-hidden rounded-[24px] bg-[#FFFEFB] shadow-[0_12px_32px_rgba(48,51,48,0.06)] border border-[#F4F4F0]'>
-
-				<div className='flex items-center justify-between border-b border-[#F4F4F0] p-5'>
+		<LoggedContainer activeItem='feed'>
+			<div className='mx-auto max-w-3xl animate-fadeIn'>
+				<div className='relative z-10 mb-5 flex justify-end'>
 					<Link
-						to={authorId ? `/users/profile/${authorId}` : '/users/profile'}
-						className='flex items-center gap-3 group'
+						to='/posts/feed'
+						className='inline-flex h-10 items-center gap-2 rounded-full bg-[#FFFEFB] px-4 text-sm font-semibold text-[#5D605C] shadow-[0_8px_20px_rgba(48,51,48,0.05)] transition-colors hover:bg-[#F4F4F0] hover:text-[#303330] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7D5739]/30'
 					>
-						<div className='h-11 w-11 overflow-hidden rounded-full bg-[#E7E9E4] flex items-center justify-center font-bold text-[#7D5739] text-sm uppercase'>
-							{authorUsername.charAt(0)}
-						</div>
-						<div>
-							<h3 className='text-sm font-bold text-[#303330] group-hover:text-[#7D5739] transition-colors'>
-								{authorDisplayName}
-							</h3>
-							<p className='text-xs font-medium text-[#5D605C]'>
-								@{authorUsername} {authorDetails?.verified && '✓'}
-							</p>
-						</div>
+						<span aria-hidden='true'>&lt;-</span>
+						<span>Back</span>
 					</Link>
+				</div>
 
-					<span className='text-xs font-medium text-[#5D605C]/70 select-none self-start pt-1'>
+			<article className='relative z-0 overflow-hidden rounded-[24px] bg-[#FFFEFB] shadow-[0_12px_32px_rgba(48,51,48,0.06)] border border-[#F4F4F0]'>
+
+				<div className='flex items-center justify-between gap-4 border-b border-[#F4F4F0] p-5'>
+					<div className='flex min-w-0 items-center gap-3'>
+						{primaryPetProfileLink ? (
+							<Link
+								to={primaryPetProfileLink}
+								className='flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#FECAA5] text-sm font-bold uppercase tracking-wider text-[#644126] shadow-inner transition-transform hover:scale-105'
+							>
+								{primaryPet?.profilePictureUrl ? (
+									<SecureImage
+										src={primaryPet.profilePictureUrl}
+										alt={primaryPet.name}
+										className='h-full w-full object-cover'
+									/>
+								) : (
+									primaryPetName?.substring(0, 2)
+								)}
+							</Link>
+						) : (
+							<Link
+								to={authorId ? `/users/profile/${authorId}` : '/users/profile'}
+								className='flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#FECAA5] text-sm font-bold uppercase tracking-wider text-[#644126] shadow-inner transition-transform hover:scale-105'
+							>
+								{authorUsername.substring(0, 2)}
+							</Link>
+						)}
+
+						<div className='flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1'>
+							{primaryPetProfileLink ? (
+								<Link
+									to={primaryPetProfileLink}
+									className='text-base font-bold text-[#303330] transition-colors hover:text-[#7D5739]'
+								>
+									{postHeaderTitle}
+								</Link>
+							) : (
+								<Link
+									to={authorId ? `/users/profile/${authorId}` : '/users/profile'}
+									className='text-base font-bold text-[#303330] transition-colors hover:text-[#7D5739]'
+								>
+									{postHeaderTitle}
+								</Link>
+							)}
+							{primaryPetName && (
+								<Link
+									to={authorId ? `/users/profile/${authorId}` : '/users/profile'}
+									className='text-base font-normal text-[#5D605C] transition-colors hover:text-[#7D5739]'
+								>
+									@{authorUsername}
+								</Link>
+							)}
+						</div>
+					</div>
+
+					<span className='shrink-0 select-none text-sm font-medium text-[#5D605C]/70'>
 						{formatCreationDate(post.createdAt)}
 					</span>
 				</div>
@@ -249,15 +304,27 @@ export default function Post() {
 							</span>
 							{post.pets.map((petName, idx) => {
 								const petId = petNameToIdMap[petName];
+								const pet = petNameToPetMap[petName];
 								const targetLink = petId ? `/pets/profile/${petId}` : (authorId ? `/users/profile/${authorId}` : '/users/profile');
 
 								return (
 									<Link
 										key={idx}
 										to={targetLink}
-										className='inline-flex items-center gap-1.5 rounded-full bg-[#FECAA5]/20 border border-[#FECAA5]/40 px-3.5 py-1.5 text-xs font-bold text-[#7D5739] hover:bg-[#FECAA5]/40 hover:text-[#644126] transition-colors'
+										className='inline-flex items-center gap-2 rounded-full border border-[#D5D7D3] bg-[#FFFEFB] py-1.5 pl-1.5 pr-3 text-sm font-semibold text-[#644126] transition-colors hover:border-[#C7B8AA] hover:bg-[#F4F4F0]'
 									>
-										🐾 {petName}
+										<span className='flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-[#FECAA5] text-xs font-bold uppercase text-[#644126]'>
+											{pet?.profilePictureUrl ? (
+												<SecureImage
+													src={pet.profilePictureUrl}
+													alt={pet.name}
+													className='h-full w-full object-cover'
+												/>
+											) : (
+												petName.charAt(0)
+											)}
+										</span>
+										{petName}
 									</Link>
 								);
 							})}
@@ -338,6 +405,7 @@ export default function Post() {
 
 				</div>
 			</article>
-		</div>
+			</div>
+		</LoggedContainer>
 	);
 }
