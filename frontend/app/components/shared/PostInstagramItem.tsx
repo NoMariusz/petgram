@@ -4,6 +4,7 @@ import { apiRequestJson } from '~/data/api';
 import { apiRequest } from '~/data/api';
 import type { PostListItem, UserProfilePetResponse } from '~/data/types';
 import SecureImage from '~/components/shared/SecureImage';
+import { formatCreationDate } from '~/utils/formatters';
 
 interface PostInstagramItemProps {
 	id: number;
@@ -24,26 +25,6 @@ interface PostLikeSummaryResponse {
 	likesCount: number;
 	isLikedByAuthenticatedUser: boolean;
 }
-
-export const formatCreationDate = (createdAtString: string): string => {
-	if (!createdAtString) return '';
-	const createdDate = new Date(createdAtString);
-	const now = new Date();
-	const diffInMs = now.getTime() - createdDate.getTime();
-	const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
-
-	if (diffInHours >= 0 && diffInHours < 24) {
-		const hours = diffInHours === 0 ? 1 : diffInHours;
-		return `${hours} hour${hours === 1 ? '' : 's'} ago`;
-	} else {
-		const day = String(createdDate.getDate()).padStart(2, '0');
-		const month = String(createdDate.getMonth() + 1).padStart(2, '0');
-		const year = createdDate.getFullYear();
-		const hours = String(createdDate.getHours()).padStart(2, '0');
-		const minutes = String(createdDate.getMinutes()).padStart(2, '0');
-		return `${day}.${month}.${year} ${hours}:${minutes}`;
-	}
-};
 
 export default function PostInstagramItem({
 	id,

@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router';
 import { apiRequestJson } from '~/data/api';
 import SecureImage from '~/components/shared/SecureImage';
-import { formatCreationDate } from '~/components/shared/PostInstagramItem';
 import { LoggedContainer } from '~/components/shared';
+import { formatCreationDate } from '~/utils/formatters';
 
 interface PostSummaryResponse {
 	id: number;
