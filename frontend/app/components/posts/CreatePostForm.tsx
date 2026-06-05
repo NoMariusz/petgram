@@ -182,32 +182,32 @@ export default function CreatePostForm() {
 					/>
 
 					<div className="flex flex-col gap-2">
-						<label className="text-sm font-semibold text-[#303330]">
-							Tag your pets
-						</label>
+						<div className='flex flex-col gap-1'>
+							<label className="text-sm font-semibold text-[#303330]">
+								Tag your pets
+							</label>
+							<p className='text-xs text-[#5D605C]'>
+								Hold Ctrl or Cmd to select multiple pets.
+							</p>
+						</div>
 						<select
 							multiple
 							name="pets"
 							value={formData.pets}
 							onChange={handleChange}
 							disabled={fetchingPets || userPets.length === 0}
-							className="min-h-[100px] w-full rounded-[10px] border border-[#D5D7D3] bg-white px-4 py-3 text-base text-[#303330] focus:border-[#7D5739] focus:outline-none focus:ring-1 focus:ring-[#7D5739] disabled:bg-gray-50 disabled:text-gray-400"
+							className="min-h-[110px] w-full rounded-[10px] border border-[#D5D7D3] bg-white px-4 py-3 text-base text-[#303330] focus:border-[#7D5739] focus:outline-none focus:ring-1 focus:ring-[#7D5739] disabled:bg-gray-50 disabled:text-gray-400"
 						>
 							{fetchingPets ? (
 								<option value="" disabled>Loading your pets...</option>
 							) : userPets.length === 0 ? (
 								<option value="" disabled>You don't have any pets yet</option>
 							) : (
-								<>
-									<option value="" disabled className="text-gray-400">
-										Select pets (Hold Ctrl/Cmd to select multiple)
+								userPets.map((pet) => (
+									<option key={pet.name} value={String(pet.name)}>
+										{pet.name}
 									</option>
-									{userPets.map((pet) => (
-										<option key={pet.name} value={String(pet.name)}>
-											{pet.name}
-										</option>
-									))}
-								</>
+								))
 							)}
 						</select>
 					</div>
