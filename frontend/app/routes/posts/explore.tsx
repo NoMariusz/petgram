@@ -148,7 +148,7 @@ export default function Explore() {
 							className='px-4 py-2 text-sm font-bold rounded-lg transition-colors relative text-[#5D605C]/50 cursor-not-allowed'
 							disabled
 						>
-							Owners <span className='text-[9px] absolute -top-1 -right-2 bg-[#7D5739] text-white px-1 rounded-full scale-75 font-normal'>Soon</span>
+							Owners <span className='text-[10px] absolute -top-2 -right-4 bg-[#7D5739] text-white px-1.5 py-0.5 rounded-full font-semibold leading-none'>Soon</span>
 						</button>
 						<button
 							type='button'
@@ -156,7 +156,7 @@ export default function Explore() {
 							className='px-4 py-2 text-sm font-bold rounded-lg transition-colors relative text-[#5D605C]/50 cursor-not-allowed'
 							disabled
 						>
-							Pets <span className='text-[9px] absolute -top-1 -right-2 bg-[#7D5739] text-white px-1 rounded-full scale-75 font-normal'>Soon</span>
+							Pets <span className='text-[10px] absolute -top-2 -right-4 bg-[#7D5739] text-white px-1.5 py-0.5 rounded-full font-semibold leading-none'>Soon</span>
 						</button>
 					</div>
 
@@ -241,15 +241,13 @@ export default function Explore() {
 
 				<section className='flex flex-col gap-6 w-full'>
 					{errors.length > 0 && (
-						<div className='rounded-[20px] bg-red-50 p-5 text-sm text-red-800 shadow-sm border border-red-200 animate-fadeIn'>
-							<div className='font-bold mb-1.5 flex items-center gap-1.5 text-red-900'>
-								⚠️ Search parameters did not pass validation:
+						<div className='rounded-[20px] bg-[#FFF7F4] p-5 text-sm text-[#7D5739] shadow-sm border border-[#FECAA5]/60 animate-fadeIn'>
+							<div className='font-bold mb-1 text-[#644126]'>
+								Add a search phrase
 							</div>
-							<ul className='list-disc list-inside space-y-1 font-medium pl-1'>
-								{errors.map((err, idx) => (
-									<li key={idx} className='text-red-700 text-xs md:text-sm'>{err}</li>
-								))}
-							</ul>
+							<p className='text-sm leading-6 text-[#7D5739]'>
+								Type at least one keyword before searching for memories.
+							</p>
 						</div>
 					)}
 
