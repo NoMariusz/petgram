@@ -7,7 +7,7 @@ import FormTextareaField from '../shared/formFields/FormTextareaField';
 import FileInputField from '../shared/formFields/FileInputField';
 import FormMainButton from '../shared/FormMainButton';
 import SecureImage from '../shared/SecureImage';
-import { ROUTES } from '~/routes';
+import { ROUTES } from '~/route-constants';
 
 interface EditPetFormData {
 	name: string;

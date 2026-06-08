@@ -1,0 +1,51 @@
+export const ROUTE_SEGMENTS = {
+	home: '',
+	postsFeed: 'posts/feed',
+	postsExplore: 'posts/explore',
+	postsCreate: 'posts/create',
+	postsById: 'posts/:id',
+	login: 'login',
+	forgotPassword: 'forgot-password',
+	register: 'register',
+	registerEmailSend: 'register-email-send',
+	usersProfile: 'users/profile',
+	usersProfileEdit: 'users/profile/edit',
+	usersProfileById: 'users/profile/:id',
+	petsAdd: 'pets/add',
+	petsProfileById: 'pets/profile/:id',
+	petsProfileEdit: 'pets/profile/:id/edit',
+	messages: 'messages',
+	settings: 'settings',
+	coreSettings: 'core/settings',
+	notFound: '*',
+} as const;
+
+export const ROUTES = {
+	home: '/',
+	posts: {
+		feed: `/${ROUTE_SEGMENTS.postsFeed}`,
+		explore: `/${ROUTE_SEGMENTS.postsExplore}`,
+		create: `/${ROUTE_SEGMENTS.postsCreate}`,
+		byId: (id: string | number) => `/posts/${id}`,
+	},
+	auth: {
+		login: `/${ROUTE_SEGMENTS.login}`,
+		forgotPassword: `/${ROUTE_SEGMENTS.forgotPassword}`,
+		register: `/${ROUTE_SEGMENTS.register}`,
+		registerEmailSend: `/${ROUTE_SEGMENTS.registerEmailSend}`,
+	},
+	users: {
+		profile: `/${ROUTE_SEGMENTS.usersProfile}`,
+		profileEdit: `/${ROUTE_SEGMENTS.usersProfileEdit}`,
+		profileById: (id: string | number) => `/users/profile/${id}`,
+	},
+	pets: {
+		add: `/${ROUTE_SEGMENTS.petsAdd}`,
+		profileById: (id: string | number) => `/pets/profile/${id}`,
+		profileEdit: (id: string | number) => `/pets/profile/${id}/edit`,
+	},
+	messages: `/${ROUTE_SEGMENTS.messages}`,
+	settings: `/${ROUTE_SEGMENTS.settings}`,
+	coreSettings: `/${ROUTE_SEGMENTS.coreSettings}`,
+	catchAll: ROUTE_SEGMENTS.notFound,
+} as const;

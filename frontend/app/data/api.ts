@@ -1,4 +1,4 @@
-import { ROUTES } from '../routes';
+import { ROUTES } from '../route-constants';
 import { LOCAL_STORAGE_ACCESS_TOKEN_KEY } from './constants';
 
 export interface ApiRequestOptions {
