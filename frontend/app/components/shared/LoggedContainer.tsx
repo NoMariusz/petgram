@@ -11,7 +11,7 @@ import {
 	LOCAL_STORAGE_ACCESS_TOKEN_KEY,
 	LOCAL_STORAGE_AUTH_STORAGE_KEY,
 } from '~/data/constants';
-import { ROUTES } from '~/routes';
+import { ROUTES } from '~/route-constants';
 
 interface LoggedContainerProps {
 	children: ReactNode;

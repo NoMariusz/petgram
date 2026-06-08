@@ -3,7 +3,7 @@ import logoUrl from '../assets/logo.svg';
 import homeImage from '../assets/home-image.png';
 import FormMainButton from '~/components/shared/FormMainButton';
 import OrDivider from '~/components/shared/OrDivider';
-import { ROUTES } from '../routes';
+import { ROUTES } from '../route-constants';
 
 export default function Home() {
 	const bg = '#FAF9F6';

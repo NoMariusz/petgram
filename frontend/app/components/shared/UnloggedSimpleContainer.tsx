@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import logoUrl from '../../assets/logo.svg';
 import { Link } from 'react-router';
-import { ROUTES } from '~/routes';
+import { ROUTES } from '~/route-constants';
 
 interface UnloggedSimpleContainerProps {
 	children: ReactNode;

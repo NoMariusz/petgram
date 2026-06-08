@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import { ROUTES } from '../routes';
+import { ROUTES } from '../route-constants';
 
 export default function NotFound() {
 	return (

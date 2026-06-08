@@ -6,7 +6,7 @@ import FormField from '../shared/formFields/FormField';
 import FormTextareaField from '../shared/formFields/FormTextareaField';
 import FileInputField from '../shared/formFields/FileInputField';
 import FormMainButton from '../shared/FormMainButton';
-import { ROUTES } from '~/routes';
+import { ROUTES } from '~/route-constants';
 
 interface AddPetFormData {
 	name: string;
