@@ -143,11 +143,10 @@ Przed przystąpieniem do właściwych prac implementacji aplikacji przygotowano 
 
 ### Wykorzystanie Google Analytics
 
-⚠️ TODO: Weryfikacja poniższego opisu
+Do aplikacji klienckiej zintegrowano bibliotekę Google Analytics. Narzędzie służy do zbierania ilościowych danych o ruchu sieciowym oraz śledzenia odsłon poszczególnych widoków aplikacji. 
 
-Do aplikacji klienckiej zintegrowano bibliotekę Google Analytics. Narzędzie to służy do zbierania ilościowych danych o ruchu sieciowym. W Petgram śledzone są statystyki odsłon poszczególnych widoków (np. strona główna, profil, sekcja odkrywaj) oraz zdarzenia systemowe, co pozwala na weryfikację zaangażowania odbiorców i retencji.
-
-⚠️ TODO: umieszczenie "screeny użycia z google analytics"
+![Google Analytics](https://github.com/user-attachments/assets/4810312a-9493-4bce-ae6b-a86e7ab116a9)
+![Google Analytics](https://github.com/user-attachments/assets/454dd881-1a16-4d9d-b378-dfbf0e3b1d82)
 
 ### Wykorzystanie Hotjar
 
