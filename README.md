@@ -150,11 +150,10 @@ Do aplikacji klienckiej zintegrowano bibliotekę Google Analytics. Narzędzie s�
 
 ### Wykorzystanie Hotjar
 
-⚠️ TODO: Weryfikacja poniższego opisu
+W projekcie wdrożono Hotjar w celu analizy jakościowej zachowania użytkowników w aplikacji. Narzędzie pozwala monitorować interakcje użytkowników z interfejsem, takie jak przejścia między widokami, kliknięcia oraz aktywność w ramach sesji. Zbierane dane mogą być wykorzystane do identyfikacji problematycznych miejsc w interfejsie, analizy sposobu poruszania się użytkowników po aplikacji oraz dalszej optymalizacji układu elementów.
 
-W projekcie wdrożono oprogramowanie Hotjar w celu analizy jakościowej i monitorowania sposobu, w jaki użytkownicy wchodzą w interakcję z interfejsem (vertical scrolling). Moduł ten pozwala na generowanie map interakcji (heatmaps) oraz rejestrowanie sesji, co służy do identyfikacji obszarów sprawiających trudności nawigacyjne i optymalizacji rozmieszczenia elementów takich jak ikony polubień czy przycisk publikacji.
-
-⚠️ TODO: umieszczenie "screeny aplikacji w hotjar"
+![Hotjar](https://github.com/user-attachments/assets/7164a85d-ad16-45c6-936d-f1e16f188b5a)
+![Hotjar](https://github.com/user-attachments/assets/d5c0e73d-f788-4e4c-8fc6-88b8b3da0ea9)
 
 ## Informacje o autorach
 
