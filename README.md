@@ -14,6 +14,8 @@ W obecnej wersji platforma udostępnia następujące funkcjonalności:
 
 ## Przedstawienie działania
 
+Działająca aplikacja jest dostępna pod adresem: http://petgram.nett.to:3000
+
 Poniżej znajdują się zrzuty ekranu prezentujące interfejs i działanie głównych modułów platformy Petgram.
 
 ![Ekran logowania](https://github.com/user-attachments/assets/15178c54-c045-4cba-bea6-2e3ab7a731ca)
